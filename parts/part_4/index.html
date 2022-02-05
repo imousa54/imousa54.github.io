@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 4: Data Binding</h2>
+	<span>Exercises covered in part 4</span>
+	<ul>
+		<li><a href="#e8">Exercise 8</a></li>
+	</ul>
+	<h4 id="e8">Exercise 8: Modify the above code, use the following data: <code><b>"var myData = [‘a’, 4, 1, ‘b’, 6, 2, 8, 9, ‘z’ ];"</b></code>
+	<br>Instead of a paragraph ‘p’ use a ‘span’. If the data element is a ‘character’ display it as ‘blue’, if it’s a number ‘display
+	it as green’ (note you’ll need to ‘chain’ a ‘.style’ method after you’ve appended the new elements)</h4>
+	<div>
+		<span><u>Solution:</u> click on the following button <button type="button" onclick="myE8Function()">Click Me!</button> to run the modified example code with the updated array data, appended spans and color conditions
+		</span>
+		<div id="e8Solution">
+		</div>
+		<script>
+			var myData = ['a', 4, 1, 'b', 6, 2, 8, 9, 'z' ];	
+		
+			function myE8Function() {	
+				var p = d3.select("#e8Solution")
+							 .selectAll("span")
+							 .data(myData)
+								 .enter()
+								 .append('span')
+								 .text(function (d, i) { return d; })
+								 .style("color",function (d, i) { 
+													if(typeof d == 'number') {
+														return 'green';
+													}
+													else if (typeof d == 'string' && d.length == 1) {
+														return 'blue';
+													}
+													return 'green'; 
+												});
+			}
+		</script>
+	</div>
+</body>
+</html>

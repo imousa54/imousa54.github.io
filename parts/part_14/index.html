@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 14: Colors</h2>
+	<span>Exercises covered in part 14</span>
+	<ul>
+		<li><a href="#e28">Exercise 28</a></li>
+		<li><a href="#e29">Exercise 29</a></li>
+	</ul>
+	<h4 id="e28"><u>Exercise 28</u>: Take one of the d3 color methods and apply it to the bar chart example (from earlier). So the color is
+	related to the value (not just fixed)
+	</h4>
+	<div>
+		<p id="e28p"><u>Solution</u>: click on the following button <button type="button" onclick="myE28Function()">Click Me!</button> to run the code and display the bar graph where colors are related to the values
+		</p>
+		<div id="e28Solution">
+
+		</div>
+		<script>
+			//Declare the width and height variables of the SVG object
+			var width = 400;
+			var height = 300;
+			var extractedAgeData = [0,0,0,0];	
+			var extractedAgeDataLabels = [ "1-30","31-40","41-60","61-100"];	
+			// Append SVG Object to the selected div with id equals e28Solution
+			var svgE28 = d3.select("#e28Solution").append("svg")
+													.attr("width",width)
+													.attr("height",height)
+													.style("border", '1px solid black');
+			function myE28Function() {
+				extractedAgeData = [0,0,0,0];	
+				extractHeartFailureData().then(
+				function(value) {
+					let myColor = d3.scaleLinear().domain([0, d3.max(extractedAgeData)]).range(["blue", "red"]);
+					let xscale_bottom = d3.scaleLinear()
+											 .domain([0, d3.max(extractedAgeData)])
+											 .range([0, width - 100]);
+					var bandScale = d3.scaleBand()
+										.domain(extractedAgeDataLabels)
+										.range([height/2, 0])
+										.paddingInner(0.05);
+					let x_axis_bottom = d3.axisBottom().scale(xscale_bottom);
+					let y_axis_left = d3.axisLeft().scale(bandScale);
+					
+					svgE28.select(".chartGroup").remove();
+					let chartGroup = svgE28.append("g")
+									.attr("class","chartGroup")
+									.attr("transform", "translate(50, 50)");
+					chartGroup.append("g")
+								.attr("transform", "translate(0, " + (height/2) + ")")
+								.call(x_axis_bottom);
+					chartGroup.append("g")
+								.call(y_axis_left);
+							
+					var ageBar = chartGroup.selectAll("g.age")
+								 .data(extractedAgeData)
+								 .enter()
+								 .append("g")
+								 .attr("class","age")
+								 .attr("transform", function(d, i) {
+														return "translate(0," + bandScale(extractedAgeDataLabels[i]) + ")";
+													});
+					ageBar.append("rect")
+							 .attr("width", function(d) { return xscale_bottom(d); })
+							 .attr("height", bandScale.bandwidth())
+							 .attr("fill", function(d) { return myColor(d); });
+					ageBar.append("text")
+							 .attr("x", function(d) { return xscale_bottom(d) + 2; })
+							 .attr("y", bandScale.bandwidth()/2)
+							 .attr("dy", ".35em")
+							 .text(function(d) { return d; });
+				},
+				function(error) {}
+				);			
+			}
+			function extractHeartFailureData() {
+				let heartfailurecsv = 'https://raw.githubusercontent.com/akmand/datasets/master/heart_failure.csv';
+				let myPromise = new Promise(function(myResolve, myReject) {
+					let objectsArray = d3.csv(heartfailurecsv, function(data) {
+										if (data.age && data.age >= 1 && data.age < 31) {
+											extractedAgeData[0] += 1;
+										}
+										else if (data.age && data.age >= 31 && data.age < 41) {
+											extractedAgeData[1] += 1;
+										}
+										else if (data.age && data.age >= 41 && data.age < 61) {
+											extractedAgeData[2] += 1;
+										}
+										else if (data.age && data.age >= 61 && data.age <= 100) {
+											extractedAgeData[3] += 1;
+										}
+					});
+					myResolve(objectsArray);
+				});
+				return myPromise;
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e29"><u>Exercise 29</u>: Take one of the d3 color methods and apply it to the line chart example (from earlier)
+	</h4>
+	<div>
+		<p id="e29p"><u>Solution</u>: click on the following button <button type="button" onclick="myE29Function()">Click Me!</button> to run the code and display the line chart where colors are related to the values using d3 color methods
+		</p>
+		<div id="e29Solution">
+
+		</div>
+		<script>
+			function myE29Function() {
+				let xSize = 600;
+				let ySize = 600;
+				let margin = 40;
+				let xMax = xSize - (margin * 2);
+				let yMax = ySize - (margin * 2);
+				// Get the 'limits' of the data - the full extent (mins and max)
+				// so the plotted data fits perfectly
+				// Create cos Points
+				let cosData = [];
+				for (let i = 0; i < 100; i++) { 
+					cosData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+				}
+				// Create sin Points
+				let sinData = [];
+				for (let i = 0; i < 100; i++) { 
+					sinData.push( {x: i/100, y: Math.sin( 6.2 * i/100 ) } ); 
+				}
+
+				let xExtent = d3.extent( cosData.concat(sinData), d=>{ return d.x } );
+				let yExtent = d3.extent( cosData.concat(sinData), d=>{ return d.y } );
+				
+				// Min and max values observed:
+				const min = d3.min(cosData.concat(sinData), function(d) { return +d.y; })
+				const max = d3.max(cosData.concat(sinData), function(d) { return +d.y; })
+				
+				// Append SVG Object to the selected div with id equals e24Solution
+				d3.select("#e24Solution").select("svg").remove();
+				let svg = d3.select("#e29Solution")
+								.append("svg")
+								.attr('width', xSize )
+								.attr('height', ySize )
+								.append("g")
+								.attr("transform","translate(" + margin + "," + margin + ")");				
+				// X Axis
+				let x = d3.scaleLinear()
+							.domain([ xExtent[0], xExtent[1] ])
+							.range([0, xMax]);
+				// bottom
+				svg.append("g")
+					.attr("transform", "translate(0," + yMax + ")")
+					.call(d3.axisBottom(x))
+					.attr('color', 'green'); // make bottom axis green
+				// top
+				svg.append("g")
+					.call(d3.axisTop(x));
+				// Y Axis
+				let y = d3.scaleLinear()
+							.domain([ yExtent[0], yExtent[1] ])
+							.range([ yMax, 0]);
+				// left y axis
+				svg.append("g").call(d3.axisLeft(y));
+				// right y axis
+				svg.append("g")
+					.attr("transform", `translate(${yMax},0)`)
+					.call(d3.axisRight(y));
+					
+				svg.append("linearGradient")
+					.attr("id", "line-gradient")
+					.attr("gradientUnits", "userSpaceOnUse")
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "0%")
+					.attr("y2", "100%")
+					.selectAll("stop")
+					.data([
+						{offset: "0%", color: "blue"},
+						{offset: "100%", color: "red"}
+					])
+					.enter().append("stop")
+								.attr("offset", function(d) { return d.offset; })
+								.attr("stop-color", function(d) { return d.color; });
+				// Add the cos path
+				svg.append("path")
+					.datum(cosData)
+					.attr("fill", "none")
+					.attr("stroke", "url(#line-gradient)" )
+					.attr("stroke-width", 2)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				// Add the sin path
+				svg.append("path")
+					.datum(sinData)
+					.attr("fill", "none")
+					.attr("stroke", "url(#line-gradient)" )
+					.attr("stroke-width", 2)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+			}
+		</script>
+	</div>
+</body>
+</html>

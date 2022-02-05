@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<style>
+		.customaxis path, .customaxis .tick line {
+			stroke:blue;
+		}
+		.customaxis .tick text {
+			fill:blue;
+		}
+	</style>
+</head>
+<body>
+	<h2>Part 10 and 11: Axis</h2>
+	<span>Exercises covered in part 10</span>
+	<ul>
+		<li><a href="#e20">Exercise 20</a></li>
+		<li><a href="#e21">Exercise 21</a></li>
+	</ul>
+	<h4 id="e20">Exercise 20: Update the example so an axis is drawn on all sides (axis on the left, right, top and bottom). Make the
+	top and right axis the color blue (text and lines are blue in color).
+	</h4>
+	<div>
+		<p><u>Solution:</u> click on the following button <button type="button" onclick="myE20Function()">Click Me!</button> to run the code and display the graph
+		</p>
+		<div id="e20Solution">
+
+		</div>
+		<script>
+			//Declare the width and height variables of the SVG object
+			const width = 400;
+			const height = 300;
+			// Append SVG Object to the selected div with id equals e20Solution
+			var svg = d3.select("#e20Solution")
+							 .append("svg")
+							 .attr("width", width)
+							 .attr("height", height)
+							 .style("border", '1px solid black');
+			function myE20Function() {
+				let data = [10, 15, 20, 25, 30];
+				let xscale_bottom = d3.scaleLinear()
+								 .domain([0, d3.max(data)])
+								 .range([0, width - 100]);
+				let xscale_top = d3.scaleLinear()
+								 .domain([0, d3.max(data)])
+								 .range([width - 100, 0]);
+				let yscale_left = d3.scaleLinear()
+								 .domain([0, d3.max(data)])
+								 .range([height/2, 0]);
+				let yscale_right = d3.scaleLinear()
+								 .domain([0, d3.max(data)])
+								 .range([0,height/2]);
+				let x_axis_bottom = d3.axisBottom().scale(xscale_bottom);
+				let y_axis_left = d3.axisLeft().scale(yscale_left);
+				let x_axis_top = d3.axisTop().scale(xscale_top);
+				let y_axis_right = d3.axisRight().scale(yscale_right);
+				
+				let chartGroup = svg.append("g")
+									.attr("transform", "translate(50, 75)");
+				chartGroup.append("g")
+							.call(y_axis_left);
+				chartGroup.append("g")
+							.attr("class","customaxis")
+							.call(x_axis_top);
+				chartGroup.append("g")
+							.attr("transform", "translate(0, " + (height/2) + ")")
+							.call(x_axis_bottom);
+				chartGroup.append("g")
+							.attr("transform", "translate(" + (width - 100) + ", 0)")
+							.attr("class","customaxis")
+							.call(y_axis_right);
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e21">Exercise 21: Add an ‘axis’ to the bar chart example (bottom and left axis for the bar chart)
+	</h4>
+	<div>
+		<p><u>Solution:</u> click on the following button <button type="button" onclick="myE21Function()">Click Me!</button> to run the code and display the bar chart with axises <b>(Age ranges for people with heart failure)</b>
+		</p>
+		<div id="e21Solution">
+
+		</div>
+		<script>
+			var extractedAgeData = [0,0,0,0];	
+			var extractedAgeDataLabels = [ "1-30","31-40","41-60","61-100"];	
+			var svgE21 = d3.select("#e21Solution").append("svg")
+													.attr("width",width)
+													.attr("height",height)
+													.style("border", '1px solid black');
+			function myE21Function() {
+				extractedAgeData = [0,0,0,0];	
+				extractHeartFailureData().then(
+				function(value) {
+					let xscale_bottom = d3.scaleLinear()
+											 .domain([0, d3.max(extractedAgeData)])
+											 .range([0, width - 100]);
+					var bandScale = d3.scaleBand()
+										.domain(extractedAgeDataLabels)
+										.range([height/2, 0])
+										.paddingInner(0.05);
+					let x_axis_bottom = d3.axisBottom().scale(xscale_bottom);
+					let y_axis_left = d3.axisLeft().scale(bandScale);
+					
+					svgE21.select(".chartGroup").remove();
+					let chartGroup = svgE21.append("g")
+									.attr("class","chartGroup")
+									.attr("transform", "translate(50, 50)");
+					chartGroup.append("g")
+								.attr("transform", "translate(0, " + (height/2) + ")")
+								.call(x_axis_bottom);
+					chartGroup.append("g")
+								.call(y_axis_left);
+							
+					var ageBar = chartGroup.selectAll("g.age")
+								 .data(extractedAgeData)
+								 .enter()
+								 .append("g")
+								 .attr("class","age")
+								 .attr("transform", function(d, i) {
+														return "translate(0," + bandScale(extractedAgeDataLabels[i]) + ")";
+													});
+					ageBar.append("rect")
+							 .attr("width", function(d) { return xscale_bottom(d); })
+							 .attr("height", bandScale.bandwidth());
+					ageBar.append("text")
+							 .attr("x", function(d) { return xscale_bottom(d) + 2; })
+							 .attr("y", bandScale.bandwidth()/2)
+							 .attr("dy", ".35em")
+							 .text(function(d) { return d; });
+				},
+				function(error) {}
+				);			
+			}
+			function extractHeartFailureData() {
+				let heartfailurecsv = 'https://raw.githubusercontent.com/akmand/datasets/master/heart_failure.csv';
+				let myPromise = new Promise(function(myResolve, myReject) {
+					let objectsArray = d3.csv(heartfailurecsv, function(data) {
+										if (data.age && data.age >= 1 && data.age < 31) {
+											extractedAgeData[0] += 1;
+										}
+										else if (data.age && data.age >= 31 && data.age < 41) {
+											extractedAgeData[1] += 1;
+										}
+										else if (data.age && data.age >= 41 && data.age < 61) {
+											extractedAgeData[2] += 1;
+										}
+										else if (data.age && data.age >= 61 && data.age <= 100) {
+											extractedAgeData[3] += 1;
+										}
+					});
+					myResolve(objectsArray);
+				});
+				return myPromise;
+			}
+		</script>
+	</div>
+</body>
+</html>

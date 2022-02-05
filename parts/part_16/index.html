@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 16: SVG Graphics</h2>
+	<span>Exercises covered in part 16</span>
+	<ul>
+		<li><a href="#e32">Exercise 32</a></li>
+	</ul>
+	<h4 id="e32"><u>Exercise 32</u>:  Add a graphical image (e.g., png/jpg) to the background of one of the graphs (e.g., bar chart or line plot).
+	Scale the image to fit the size of the svg bounds (covers background)
+	</h4>
+	<div>
+		<p id="e32p"><u>Solution</u>: click on the following button <button type="button" onclick="myE32Function()">Click Me!</button> to run the code and display the graphical image as background for the graph
+		</p>
+		<div id="e32Solution">
+
+		</div>
+		<script>
+			function myE32Function() {
+				let xSize = 600;
+				let ySize = 600;
+				let margin = 40;
+				let xMax = xSize - (margin * 2);
+				let yMax = ySize - (margin * 2);
+				// Get the 'limits' of the data - the full extent (mins and max)
+				// so the plotted data fits perfectly
+				// Create sin Points
+				let sinData = [];
+				for (let i = 0; i < 100; i++) { 
+					sinData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+				}
+				let xExtent = d3.extent( sinData, d=>{ return d.x } );
+				let yExtent = d3.extent( sinData, d=>{ return d.y } );
+				// Append SVG Object to the selected div with id equals e32Solution
+				d3.select("#e32Solution").select("svg").remove();
+				let svg = d3.select("#e32Solution")
+								.append("svg")
+								.attr('width', xSize )
+								.attr('height', ySize )
+								.append("g")
+								.attr("transform","translate(" + margin + "," + margin + ")");
+
+				svg.append("svg:image")
+					.attr("xlink:href", "water.PNG")
+					.attr("width", xMax)
+					.attr("height", yMax);
+					
+				// X Axis
+				let x = d3.scaleLinear()
+							.domain([ xExtent[0], xExtent[1] ])
+							.range([0, xMax]);
+				// bottom
+				svg.append("g")
+					.attr("transform", "translate(0," + yMax + ")")
+					.call(d3.axisBottom(x));
+				// top
+				svg.append("g")
+					.call(d3.axisTop(x));
+				// Y Axis
+				let y = d3.scaleLinear()
+							.domain([ yExtent[0], yExtent[1] ])
+							.range([ yMax, 0]);
+				// left y axis
+				svg.append("g").call(d3.axisLeft(y));
+				// right y axis
+				svg.append("g")
+					.attr("transform", `translate(${yMax},0)`)
+					.call(d3.axisRight(y));
+				// Add the cos path
+				svg.append("path")
+					.datum(sinData)
+					.attr("fill", "none")
+					.attr("stroke", "green")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				svg.selectAll("dot")
+					 .data(sinData)
+					 .enter()
+					 .append("circle")
+					 .attr("cx", function (d) { return x(d.x) } )
+					 .attr("cy", function (d) { return y(d.y) } )
+					 .attr("r", 5)
+					 .style("fill", "red");
+			}
+		</script>
+	</div>
+</body>
+</html>

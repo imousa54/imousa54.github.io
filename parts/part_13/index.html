@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 13: Markers</h2>
+	<span>Exercises covered in part 13</span>
+	<ul>
+		<li><a href="#e25">Exercise 25</a></li>
+		<li><a href="#e26">Exercise 26</a></li>
+		<li><a href="#e27">Exercise 27</a></li>
+	</ul>
+	<h4 id="e25"><u>Exercise 25</u>: Add a ‘circle point’ to the line graph, so that each data point is displayed on the graph as circle
+	</h4>
+	<div>
+		<p id="e25p"><u>Solution</u>: click on the following button <button type="button" onclick="myE25Function()">Click Me!</button> to run the code and display the COS graph with marker circle points
+		</p>
+		<div id="e25Solution">
+
+		</div>
+		<script>
+			function myE25Function() {
+				//Declare the width and height and margin variables of the SVG object
+				let xSize = 600;
+				let ySize = 600;
+				let margin = 40;
+				let xMax = xSize - (margin * 2);
+				let yMax = ySize - (margin * 2);
+				// Get the 'limits' of the data - the full extent (mins and max)
+				// so the plotted data fits perfectly
+				// Create sin Points
+				let sinData = [];
+				for (let i = 0; i < 100; i++) { 
+					sinData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+				}
+				let xExtent = d3.extent( sinData, d=>{ return d.x } );
+				let yExtent = d3.extent( sinData, d=>{ return d.y } );
+				// Append SVG Object to the selected div with id equals e25Solution
+				d3.select("#e25Solution").select("svg").remove();
+				let svg = d3.select("#e25Solution")
+								.append("svg")
+								.attr('width', xSize )
+								.attr('height', ySize )
+								.append("g")
+								.attr("transform","translate(" + margin + "," + margin + ")");				
+				// X Axis
+				let x = d3.scaleLinear()
+							.domain([ xExtent[0], xExtent[1] ])
+							.range([0, xMax]);
+				// bottom
+				svg.append("g")
+					.attr("transform", "translate(0," + yMax + ")")
+					.call(d3.axisBottom(x));
+				// top
+				svg.append("g")
+					.call(d3.axisTop(x));
+				// Y Axis
+				let y = d3.scaleLinear()
+							.domain([ yExtent[0], yExtent[1] ])
+							.range([ yMax, 0]);
+				// left y axis
+				svg.append("g").call(d3.axisLeft(y));
+				// right y axis
+				svg.append("g")
+					.attr("transform", `translate(${yMax},0)`)
+					.call(d3.axisRight(y));
+				// Add the cos path
+				svg.append("path")
+					.datum(sinData)
+					.attr("fill", "none")
+					.attr("stroke", "green")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				svg.selectAll("dot")
+					 .data(sinData)
+					 .enter()
+					 .append("circle")
+					 .attr("cx", function (d) { return x(d.x) } )
+					 .attr("cy", function (d) { return y(d.y) } )
+					 .attr("r", 5)
+					 .style("fill", "red");
+
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e26"><u>Exercise 26</u>: Plot two lines on the same graph, and mark the data points as circles for the first line and triangles for
+	the second line
+	</h4>
+	<div>
+		<p><u>Solution:</u> click on the following button <button type="button" onclick="myE26Function()">Click Me!</button> to run the code and display the multiple line paths on the same chart <b>(Cos path data is marked with triangles, and Sin path data is marked with circles)</b>
+		</p>
+		<div id="e26Solution">
+
+		</div>
+		<script>
+			function myE26Function() {
+				//Declare the width and height and margin variables of the SVG object
+				let xSize = 600;
+				let ySize = 600;
+				let margin = 40;
+				let xMax = xSize - (margin * 2);
+				let yMax = ySize - (margin * 2);
+				// Get the 'limits' of the data - the full extent (mins and max)
+				// so the plotted data fits perfectly
+				// Create cos Points
+				let cosData = [];
+				for (let i = 0; i < 100; i++) { 
+					cosData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+				}
+				// Create sin Points
+				let sinData = [];
+				for (let i = 0; i < 100; i++) { 
+					sinData.push( {x: i/100, y: Math.sin( 6.2 * i/100 ) } ); 
+				}
+
+				let xExtent = d3.extent( cosData.concat(sinData), d=>{ return d.x } );
+				let yExtent = d3.extent( cosData.concat(sinData), d=>{ return d.y } );
+				// Append SVG Object to the selected div with id equals e26Solution
+				d3.select("#e26Solution").select("svg").remove();
+				let svg = d3.select("#e26Solution")
+								.append("svg")
+								.attr('width', xSize )
+								.attr('height', ySize )
+								.append("g")
+								.attr("transform","translate(" + margin + "," + margin + ")");				
+				// X Axis
+				let x = d3.scaleLinear()
+							.domain([ xExtent[0], xExtent[1] ])
+							.range([0, xMax]);
+				// bottom
+				svg.append("g")
+					.attr("transform", "translate(0," + yMax + ")")
+					.call(d3.axisBottom(x));
+				// top
+				svg.append("g")
+					.call(d3.axisTop(x));
+				// Y Axis
+				let y = d3.scaleLinear()
+							.domain([ yExtent[0], yExtent[1] ])
+							.range([ yMax, 0]);
+				// left y axis
+				svg.append("g").call(d3.axisLeft(y));
+				// right y axis
+				svg.append("g")
+					.attr("transform", `translate(${yMax},0)`)
+					.call(d3.axisRight(y));
+				// Add the cos path
+				svg.append("path")
+					.datum(cosData)
+					.attr("fill", "none")
+					.attr("stroke", "green")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				// Add the sin path
+				svg.append("path")
+					.datum(sinData)
+					.attr("fill", "none")
+					.attr("stroke", "blue")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				svg.selectAll("dot")
+					 .data(sinData)
+					 .enter()
+					 .append("circle")
+					 .attr("cx", function (d) { return x(d.x) } )
+					 .attr("cy", function (d) { return y(d.y) } )
+					 .attr("r", 5)
+					 .style("fill", "red");
+				svg.selectAll("dot")
+					 .data(cosData)
+					 .enter()
+					 .append("path")
+					 .attr("d", function (d) { return createTrianglePath(x(d.x),y(d.y)); })
+					 .style("fill", "blue");
+			}
+			function createTrianglePath(x,y) {
+				return "M " + x + " " + y + 
+					   " L " + (x - 5) + " " + (y + 5) + 
+					   " L " + (x + 5) + " " + (y + 5) + " z";
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e27"><u>Exercise 27</u>: Add ‘text’ to certain points on the line plot (e.g., next to the ‘circle’ dot also write the number of the
+	data value). Limit the text information to only a few points so it doesn’t get over crowded.
+	</h4>
+	<div>
+		<p id="e27p"><u>Solution</u>: click on the following button <button type="button" onclick="myE27Function()">Click Me!</button> to run the code and display the COS graph with marker circle points and (x,y) position
+		</p>
+		<div id="e27Solution">
+
+		</div>
+		<script>
+			function myE27Function() {
+				//Declare the width and height and margin variables of the SVG object
+				let xSize = 600;
+				let ySize = 600;
+				let margin = 40;
+				let xMax = xSize - (margin * 2);
+				let yMax = ySize - (margin * 2);
+				// Get the 'limits' of the data - the full extent (mins and max)
+				// so the plotted data fits perfectly
+				// Create sin Points
+				let sinData = [];
+				let sinMarkerData = [];
+				for (let i = 0; i < 100; i++) { 
+					sinData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } );
+					if (i > 0 && i % 10 == 0) {
+						sinMarkerData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } );
+					}
+				}
+				let xExtent = d3.extent( sinData, d=>{ return d.x } );
+				let yExtent = d3.extent( sinData, d=>{ return d.y } );
+				// Append SVG Object to the selected div with id equals e27Solution
+				d3.select("#e27Solution").select("svg").remove();
+				let svg = d3.select("#e27Solution")
+								.append("svg")
+								.attr('width', xSize )
+								.attr('height', ySize )
+								.append("g")
+								.attr("transform","translate(" + margin + "," + margin + ")");				
+				// X Axis
+				let x = d3.scaleLinear()
+							.domain([ xExtent[0], xExtent[1] ])
+							.range([0, xMax]);
+				// bottom
+				svg.append("g")
+					.attr("transform", "translate(0," + yMax + ")")
+					.call(d3.axisBottom(x));
+				// top
+				svg.append("g")
+					.call(d3.axisTop(x));
+				// Y Axis
+				let y = d3.scaleLinear()
+							.domain([ yExtent[0], yExtent[1] ])
+							.range([ yMax, 0]);
+				// left y axis
+				svg.append("g").call(d3.axisLeft(y));
+				// right y axis
+				svg.append("g")
+					.attr("transform", `translate(${yMax},0)`)
+					.call(d3.axisRight(y));
+				// Add the cos path
+				svg.append("path")
+					.datum(sinData)
+					.attr("fill", "none")
+					.attr("stroke", "green")
+					.attr("stroke-width", 1.5)
+					.attr("d", d3.line()
+						.x(function(d) { return x(d.x) })
+						.y(function(d) { return y(d.y) })
+					);
+				var markerGroup = svg.selectAll("g.markerGroup")
+									 .data(sinMarkerData)
+									 .enter()
+									 .append("g")
+									 .attr("class","markerGroup")
+									 .attr("transform", function(d) {
+															return "translate("+ x(d.x) +"," + y(d.y) + ")";
+														}); 
+				markerGroup.append("circle")
+							 .attr("r", 5)
+							 .style("fill", "red");
+				markerGroup.append("text")
+							 .attr("x", "6")
+							 .attr("dy", ".35em")
+							 .style("font-size", "11")
+							 .text(function(d) { return "("+ d.x.toFixed(2) +"," + d.y.toFixed(2) + ")"; });
+			}
+		</script>
+	</div>
+</body>
+</html>

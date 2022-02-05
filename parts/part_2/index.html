@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 2: D3 Setup and Library Basic Operations</h2>
+	<span>Exercises covered in part 2</span>
+	<ul>
+		<li><a href="#e1">Exercise 1</a></li>
+		<li><a href="#e2">Exercise 2</a></li>
+		<li><a href="#e3">Exercise 3</a></li>
+		<li><a href="#e4">Exercise 4</a></li>
+		<li><a href="#e5">Exercise 5</a></li>
+	</ul>
+	<h4 id="e1">Exercise 1: What version number is displayed in the console output window?</h4>
+		<div>
+			<u>Solution:</u>
+			<script>
+				/*
+					version is variable declared on the d3.js to hold the version details of the library
+					(var version = "7.3.0";)
+				*/
+				console.log('d3.version:', d3.version);
+				document.write("D3 library version is <b>" + d3.version + "</b> by calling the declared \"version\" variable inside the library");
+			</script>
+		</div>
+	<br><hr>
+	<h4 id="e2">Exercise 2: Change other style properties of the paragraph tag (e.g., font-size, line-height, font-family, contents)</h4>
+		<div>
+			<span><u>Solution:</u> click on the following button <button type="button" onclick="myE2Function1()">Click Me!</button> to update the 
+			style and content for the first paragraph, or the following button <button type="button" onclick="myE2Function2()">Click Me!</button> to update all paragraphs located in exercise 2
+			</span>
+			<div id="e2Solution">
+				<p>First paragraph</p>
+				<p>Second paragraph</p>
+			</div>
+			<script>
+				//Predefined style in Exercise 2
+				d3.select("#e2Solution").select("p").style("color", "red");
+				/*
+					myE2Function1() will select the first paragraph child in the div (id=e2Solution) and add inline CSS through style tag to the paragraph that change the font size, font weight, line height, font family, and color, and update the text content of the paragraph using DOM and D3 Manipulation
+				*/
+				function myE2Function1() {
+					d3.select("#e2Solution").select("p")
+												.style("font-size", "15px")
+												.style("font-weight", "bold")
+												.style("line-height", "18px")
+												.style("font-family", "Arial, Helvetica, sans-serif")
+												.style("color", "blue")
+												.text("Updated content for paragraph 1 using DOM and D3 Manipulation");
+				}
+				/*
+					myE2Function2() will select all paragraph childs in the div (id=e2Solution) and add inline CSS through style tag to the paragraphs that change the font size, font weight, line height, font family, and color, and update the text content of the paragraphs using DOM and D3 Manipulation
+				*/
+				function myE2Function2() {
+					d3.select("#e2Solution").selectAll("p")
+												.style("font-size", "15px")
+												.style("font-weight", "bold")
+												.style("line-height", "18px")
+												.style("font-family", "Arial, Helvetica, sans-serif")
+												.style("color", "blue")
+												.text("Updated contents for paragraph 1 and 2 using DOM and D3 Manipulation");
+				}
+			</script>
+		</div>
+	<br><hr>
+	<h4 id="e3">Exercise 3: Write a loop which adds 10 ‘div’ elements and sets the contents to the count value (i.e., 1, 2, 3, …). Also
+		the color of the first 5 elements are red and the last 5 elements are green (lookup the attr(), property() and style()
+		methods)</h4>
+	<div>
+		<span><u>Solution:</u> click on the following button <button type="button" onclick="myE3Function()">Click Me!</button> to add the 
+		10 div elements with the custom styles and contents
+		</span>
+		<div id="e3Solution">
+		</div>
+		<script>
+			const addedDivElements = [];
+			function myE3Function() {
+				let divColor = "red";
+				for (let i = 1; i <= 10; i++) {
+					if(i > 5) {
+						divColor = "green";
+					}
+					let addedDiv = d3.select("#e3Solution").append("div");
+					addedDiv.style("color", divColor);
+					addedDiv.text(i);
+					addedDivElements.push(addedDiv);
+				}
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e4">Exercise 4: ‘selecting’ and modifying your ‘div’ elements after you’ve created and added them (e.g., select the first
+		div element and make its content text equal to ‘start’ – also change its color to ‘purple’</h4>
+	<div>
+		<span><u>Solution:</u> Run question 3 and then please click on the following button <button type="button" onclick="myE4Function()">Click Me!</button> to update the content and style of the first div, and observe the result on question 3 solution
+		</span>
+		<script>
+			function myE4Function() {
+				let firstDiv = d3.select("#e3Solution").select("div");
+				firstDiv.style("color", "purple");
+				firstDiv.text("start");
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e5">Exercise 5: Exercise: Add to the ‘chain syntax’ version for the ‘hello world’ example above – so it also sets the ‘color’
+		of the text to green</h4>
+	<div>
+		<span><u>Solution:</u> click on the following button <button type="button" onclick="myE5Function()">Click Me!</button> to run the following revised chain syntax: <code><b>"d3.select("#e5Solution").append("div").text("Hello World!").style("color","green");"</b></code>
+		</span>
+		<div id="e5Solution">
+		</div>
+		<script>
+			function myE5Function() {
+				d3.select("#e5Solution").append("div").text("Hello World!").style("color","green");
+			}
+		</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+shapeType,fill,x,y,rectWidth,rectheight,rX,rY,x2,y2
+circle,red,100,250,,,90,,,
+rectangle,green,100,150,100,100,,,,
+ellipse,blue,100,50,,,100,33,,
+line,,100,350,,,,,350,350
+circle,blue,300,280,,,110,,,
+rectangle,red,250,150,70,70,,,,
+ellipse,green,300,250,,,110,50,,
+line,,300,50,,,,,300,270

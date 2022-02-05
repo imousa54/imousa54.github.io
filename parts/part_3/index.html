@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 3: Data</h2>
+	<span>Exercises covered in part 3</span>
+	<ul>
+		<li><a href="#e6">Exercise 6</a></li>
+		<li><a href="#e7">Exercise 7</a></li>
+	</ul>
+	<h4 id="e6">Exercise 6: Modify the example above so the ‘otherdata’ contains an additional variable called color (print this color
+	value out in the ‘text’ method</h4>
+	<div>
+		<span><u>Solution:</u> click on the following button <button type="button" onclick="myE6Function()">Click Me!</button> to run the modified example code with the additional variable called color
+		</span>
+		<div id="e6Solution">
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<script>
+			let otherdata = [{name:'test', val:1, color:'red'}
+				,{name:'other', val:2, color:'blue'}
+				,{name:'b', val:3, color:'green'}];
+				
+			function myE6Function() {	
+				let paragraph = d3.select("#e6Solution")
+						 .selectAll("div")
+						 .data(otherdata)
+						 .style("color",function (d,i){ return d.color; })
+						 .text(function (d, i) {
+								 console.log("d.name: " + d.name);
+								 console.log("d.val: " + d.val);
+								 console.log("d.color: " + d.color);
+								 console.log("i: " + i);
+								 console.log("this: " + this);
+								 return 'cont:' + d.name + ', color:' + d.color;
+								 });
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e7">Exercise 7: Change the bounds check so the color is red for numbers between 50 and 100</h4>
+	<div>
+		<span><u>Solution:</u> click on the following button <button type="button" onclick="myE7Function()">Click Me!</button> to run the modified example code with the updated conditions
+		</span>
+		<div id="e7Solution">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<script>
+			let num = [10, 50, 100, 200];
+				
+			function myE7Function() {	
+				let paragraphE7 = d3.select("#e7Solution")
+									 .selectAll("div")
+									 .data(num)
+									 .text(function (d, i) { return 'cont:' + d; })
+									 .style("color", function(d, i) {
+														 if ( d >= 50 && d <= 100) {
+															return "red";
+														 } else {
+															return "yellow";
+														 }
+														 return 'blue';
+													});
+			}
+		</script>
+	</div>
+</body>
+</html>

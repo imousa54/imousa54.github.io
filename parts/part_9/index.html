@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 1 - Basics</title>
+	<link rel="icon" type="image/x-icon" href="./../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<style>
+		#e19p {line-height:1.6;}
+		#csvFileLink {width:400px;}
+	</style>
+</head>
+<body>
+	<h2>Part 9: Scales, Domain, Range</h2>
+	<span>Exercises covered in part 9</span>
+	<ul>
+		<li><a href="#e17">Exercise 17</a></li>
+		<li><a href="#e18">Exercise 18</a></li>
+		<li><a href="#e18">Exercise 19</a></li>
+	</ul>
+	<h4 id="e17">Exercise 17: Modify the example above so the bars are green if below 100 and red if above 500
+	</h4>
+	<div>
+		<p><u>Solution:</u> click on the following button <button type="button" onclick="myE17Function()">Click Me!</button> to run the code and display the bar graph with colors (green if below 100 and red if above 500)
+		</p>
+		<div id="e17Solution">
+
+		</div>
+		<script>
+			//Declare the width and height and margin variables of the SVG object
+			const width = 500;
+			const barHeight = 20;
+			const margin = 1;
+			const scaleLinearRange = [50, 500];
+			let data = [50, 400, 300, 900, 250, 1000]
+			// Append SVG Object to the selected div with id equals e17Solution
+			var svgE17 = d3.select("#e17Solution")
+								 .append("svg")
+								 .attr("width", width)
+								 .attr("height", barHeight * data.length)
+								 .style("border", '1px solid black');
+			function myE17Function() {
+				var scale = d3.scaleLinear()
+								.domain([d3.min(data), d3.max(data)])
+								.range(scaleLinearRange);
+				var g = svgE17.selectAll("g")
+							 .data(data)
+							 .enter()
+							 .append("g")
+							 .attr("transform", function (d, i) {
+													return "translate(0," + i * barHeight + ")";
+												 });
+				g.append("rect")
+					 .attr("width", function (d) { return scale(d); })
+					 .attr('fill', function (d) { return rectColor(d); })
+					 .attr("height", barHeight - margin);
+				g.append("text")
+					 .attr("x", function (d) { return (scale(d)); })
+					 .attr("y", barHeight / 2)
+					 .attr("dy", ".35em")
+					 .style('text-anchor', 'end')
+					 .text(function (d) { return d; });
+			}
+			
+			function rectColor(dataItem) {
+				if (dataItem < 100){
+					return 'green';
+				}
+				else if (dataItem > 500){
+					return 'red';
+				}
+				return 'blue';
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e18">Exercise 18: Extend the example, so the ‘bar chart’ data is displayed from an external file (e.g., csv)
+	</h4>
+	<div>
+		<p><u>Solution:</u> click on the following button <button type="button" onclick="myE18Function()">Click Me!</button> to run the code and display the bar graph from external CSV source
+		</p>
+		<div id="e18Solution">
+
+		</div>
+		<script>
+			var e18ExtractedData = [];
+			// Append SVG Object to the selected div with id equals e18Solution
+			var svgE18 = d3.select("#e18Solution")
+								 .append("svg")
+								 .attr("width", width)
+								 .attr("height", 100)
+								 .style("border", '1px solid black');
+			function myE18Function() {
+				e18ExtractedData = [];
+				
+				extractE18CSVData().then(
+				function(value) {
+				console.log(e18ExtractedData);
+				console.log(d3.min(e18ExtractedData));
+				console.log(d3.max(e18ExtractedData));
+				console.log(scaleLinearRange);
+				d3.select("#e18Solution").select("svg").attr("height", barHeight * e18ExtractedData.length);
+				var scale = d3.scaleLinear()
+								.domain([d3.min(e18ExtractedData), d3.max(e18ExtractedData)])
+								.range(scaleLinearRange);
+				var g = svgE18.selectAll("g")
+							 .data(e18ExtractedData)
+							 .enter()
+							 .append("g")
+							 .attr("transform", function (d, i) {
+													return "translate(0," + i * barHeight + ")";
+												 });
+				g.append("rect")
+					 .attr("width", function (d) { return scale(d); })
+					 .attr('fill', function (d) { return rectColor(d); })
+					 .attr("height", barHeight - margin);
+				g.append("text")
+					 .attr("x", function (d) { return (scale(d)); })
+					 .attr("y", barHeight / 2)
+					 .attr("dy", ".35em")
+					 .style('text-anchor', 'end')
+					 .text(function (d) { return d; });
+				},
+				function(error) {}
+				);	
+			}
+			function extractE18CSVData() {
+				let barData = 'https://imousa54.github.io/data/bar_data_2.csv';
+				let myPromise = new Promise(function(myResolve, myReject) {
+					let objectsArray = d3.csv(barData, function(data) {
+										if (data.val && Number(data.val) >= 0) {
+											e18ExtractedData.push(Number(data.val));
+										}
+					});
+					myResolve(objectsArray);
+				});
+				return myPromise;
+			}
+		</script>
+	</div>
+		<br><hr>
+	<h4 id="e19">Exercise 19: Put the code in a ‘function’ so the bar chart is only displayed when the function is called. Also if the
+	function is called twice, then it will show the bar chart twice on screen. Extend this function so it takes a ‘csv’ file
+	name as the input argument. Call it twice and it displays two different bar charts using different data on screen
+	</h4>
+	<div>
+		<p id="e19p"><u>Solution:</u> 
+		Choose pre-created CSV or add the link to any external file (must have one column with 'val' as header for the data)<br>
+		<select id="csvFileSelect" name="csvFileSelect" onchange="updateCSVFileLink()">
+			<option value="">Add External Link</option>
+			<option value="https://imousa54.github.io/data/bar_data_0.csv">bar_data_0.csv</option>
+			<option value="https://imousa54.github.io/data/bar_data_1.csv">bar_data_1.csv</option>
+			<option value="https://imousa54.github.io/data/bar_data_2.csv">bar_data_2.csv</option>
+		</select>
+		<input type="text" id="csvFileLink" name="csvFileLink" value=""><br>
+		click on the following button <button type="button" onclick="myE19Function()">Click Me!</button> to run the code and display the bar graph from external CSV source
+		</p>
+		<div id="e19Solution">
+
+		</div>
+		<script>
+			var e19ExtractedData = [];
+			function myE19Function() {
+				e19ExtractedData = [];
+				extractE19CSVData().then(
+				function(value) {
+				var svgE19 = d3.select("#e19Solution")
+								 .append("svg")
+								 .attr("width", width)
+								 .attr("height", barHeight * e19ExtractedData.length)
+								 .style("border", '1px solid black');
+				var scale = d3.scaleLinear()
+								.domain([d3.min(e19ExtractedData), d3.max(e19ExtractedData)])
+								.range(scaleLinearRange);
+				var g = svgE19.selectAll("g")
+							 .data(e19ExtractedData)
+							 .enter()
+							 .append("g")
+							 .attr("transform", function (d, i) {
+													return "translate(0," + i * barHeight + ")";
+												 });
+				g.append("rect")
+					 .attr("width", function (d) { return scale(d); })
+					 .attr('fill', function (d) { return rectColor(d); })
+					 .attr("height", barHeight - margin);
+				g.append("text")
+					 .attr("x", function (d) { return (scale(d)); })
+					 .attr("y", barHeight / 2)
+					 .attr("dy", ".35em")
+					 .style('text-anchor', 'end')
+					 .text(function (d) { return d; });
+				},
+				function(error) {}
+				);	
+			}
+			function extractE19CSVData() {
+				let barData = document.getElementById("csvFileLink").value;
+				let myPromise = new Promise(function(myResolve, myReject) {
+					let objectsArray = d3.csv(barData, function(data) {
+										if (data.val && Number(data.val) >= 0) {
+											e19ExtractedData.push(Number(data.val));
+										}
+					});
+					myResolve(objectsArray);
+				});
+				return myPromise;
+			}
+			function updateCSVFileLink() {
+				document.getElementById("csvFileLink").value = document.getElementById("csvFileSelect").value;
+				if(document.getElementById("csvFileSelect").selectedIndex == 0) {
+					document.getElementById("csvFileLink").disabled = false;
+				}
+				else {
+					document.getElementById("csvFileLink").disabled = true;
+				}
+			}
+		</script>
+	</div>
+</body>
+</html>
