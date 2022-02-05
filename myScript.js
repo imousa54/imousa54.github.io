@@ -4,7 +4,6 @@ function checkURLOnPageLoad() {
 	let part = urlParams.get('part');
 	let partNumber = Number(part);
 	if (part && partNumber && partNumber >= 1 && partNumber <= 16 & partNumber != 11) {
-		console.log(document.getElementById('part'+part));
 		selectPart(document.getElementById('part'+part), part);
 	}
 }
