@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<
+</head>
+<body>
+	<h2>Part 3: D3 Transitions</h2>
+	<span>Exercises covered in part 3</span>
+	<ul>
+		<li><a href="#e6">Exercise 6</a></li>
+		<li><a href="#e7">Exercise 7</a></li>
+		<li><a href="#e8">Exercise 8</a></li>
+		<li><a href="#e9">Exercise 9</a></li>
+		<li><a href="#e10">Exercise 10</a></li>
+		<li><a href="#e11">Exercise 11</a></li>
+		<li><a href="#e12">Exercise 12</a></li>
+		<li><a href="#e13">Exercise 13</a></li>
+		<li><a href="#e14">Exercise 14</a></li>
+	</ul>
+	<h4 id="e6"><u>Exercise 6</u>: Chain an extra transition onto the example above so that after the ‘div’ element animates to ‘red’ it then continues to transition to ‘green’ over 2 seconds
+	</h4>
+	<div>
+		<p id="e6p"><u>Solution</u>: click on the following button <button type="button" onclick="myE6Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e6Solution">
+
+		</div>
+		<script> 
+			function myE6Function() {
+				d3.select("#e6Solution").selectAll("div").remove();
+				d3.select('#e6Solution').append("div")
+											.style('width', '100px')
+											.style('height', '100px')
+											.style('background-color', 'blue')
+											.style("border", '1px solid black')
+										.transition()
+											.duration(1000)
+											.style("background-color", "red")
+										.transition()
+											.duration(2000)
+											.style("background-color", "green");
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e7"><u>Exercise 7</u>: In addition to transitioning the color, also change the ‘size’ of the div element so it transitions smaller then transitions larger (i.e., width and height style values)
+	</h4>
+	<div>
+		<p id="e7p"><u>Solution</u>: click on the following button <button type="button" onclick="myE7Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e7Solution">
+
+		</div>
+		<script>
+			function myE7Function() {
+				let e7DivWidth = 100;
+				let e7DivHeight = 100;
+				d3.select("#e7Solution").selectAll("div").remove();
+				d3.select('#e7Solution').append("div")
+											.style('width', "100px")
+											.style('height', "100px")
+											.style('background-color', 'blue')
+											.style("border", '1px solid black')
+										.transition()
+											.duration(1000)
+											.style('width', (e7DivWidth * 0.5) + "px")
+											.style('height', (e7DivHeight * 0.5) + "px")
+											.style("background-color", "red")
+										.transition()
+											.duration(2000)
+											.style('width', (e7DivWidth * 1.5) + "px")
+											.style('height', (e7DivHeight * 1.5) + "px")
+											.style("background-color", "green");
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e8"><u>Exercise 8</u>: Combining the ‘transition’ method with the mouse over ‘event’. So that the ‘div’ transitions color only when the mouse moves over and back to the original color when moves away from the element
+	</h4>
+	<div>
+		<p id="e8p"><u>Solution</u>: click on the following button <button type="button" onclick="myE8Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e8Solution">
+
+		</div>
+		<script>
+			function myE8Function() {
+				d3.select("#e8Solution").selectAll("div").remove();
+				d3.select('#e8Solution').append("div")
+											.style('width', '100px')
+											.style('height', '100px')
+											.style('background-color', 'blue')
+											.style("border", '1px solid black')
+										.on("mouseover", function(event){
+											d3.select(this)
+												.transition()
+													.duration(1000)
+													.style("background-color", "red")
+												.transition()
+													.duration(2000)
+													.style("background-color", "green");
+										})
+										.on("mouseout", function(){
+											d3.select(this)
+												.transition()
+													.style('background-color', 'blue');
+										});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e9"><u>Exercise 9</u>: Add two additional ‘div’ elements and perform the same ‘transitions’ but with different ‘easing’ methods (see the elements transition at the same time but with different easing motions)
+	</h4>
+	<div>
+		<p id="e9p"><u>Solution</u>: click on the following button <button type="button" onclick="myE9Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e9Solution">
+
+		</div>
+		<script>
+			function myE9Function() {
+				d3.select('#e9Solution').style("display", "inline-block");
+				d3.select('#e9Solution').selectAll("div").remove();
+				addDivToE9WithEasing(d3.easeBounce,"Bounce");
+				addDivToE9WithEasing(d3.easeElastic,"Elastic");
+				addDivToE9WithEasing(d3.easeBack,"Back");
+				addDivToE9WithEasing(d3.easeLinear,"Linear");
+				addDivToE9WithEasing(d3.easeSin,"Sin");
+				addDivToE9WithEasing(d3.easeQuad,"Quad");
+				addDivToE9WithEasing(d3.easeCubic,"Cubic");
+				addDivToE9WithEasing(d3.easePoly,"Poly");
+				addDivToE9WithEasing(d3.easeCircle,"Circle");
+				addDivToE9WithEasing(d3.easeExp,"Exp");
+
+			}
+			function addDivToE9WithEasing(easingMotion, easingMotionTitle) {
+				d3.select('#e9Solution')
+					.append("div")
+					.style('float', 'left')
+					.style('width', '100px')
+					.style('height', '100px')
+					.style('background-color', 'blue')
+					.style('transform', 'scale(1.0)')
+					.text(easingMotionTitle)
+					.style("font-size","22px")
+					.transition()
+						.ease(easingMotion)
+						.duration(1000)
+						.style("background-color", "red")
+						.style('transform', 'scale(0.5)');
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e10"><u>Exercise 10</u>: Add the easing effect to the svg circle example, so when a mouse moves over a ‘circle’ svg element, it grows by a small amount, when the mouse moves away (out of focus) the svg circle returns to the original size (use the ease ‘bounce’)
+	</h4>
+	<div>
+		<p id="e10p"><u>Solution</u>: click on the following button <button type="button" onclick="myE10Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e10Solution">
+
+		</div>
+		<script>
+			function myE10Function() {
+				let xSize = 250;
+				let ySize = 250;
+				d3.select("#e10Solution").select("svg").remove();
+				let svg = d3.select("#e10Solution")
+								.append("svg")
+								.attr('width', xSize)
+								.attr('height', ySize)
+								.style("border", '1px solid black');
+				let r = 50;
+				svg.append("circle")
+					.attr("cx", xSize/2)
+					.attr("cy", ySize/2)
+					.attr("r", r)
+					.style("fill", "blue")
+					.on("mouseover", function(event){
+						d3.select(this).transition()
+										.ease(d3.easeBounce)
+										.duration('250')
+										.attr("r", r * 1.2);
+					})
+					.on("mouseout", function(){
+						d3.select(this).transition()
+										.ease(d3.easeBounce)
+										.duration('250')
+										.attr("r", r);
+					});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e11"><u>Exercise 11</u>: Add a ‘text’ svg element, when the mouse moves over the text, the size of the text changes color and increases in size (when the mouse moves out/away the text goes back to the original color/size)
+	</h4>
+	<div>
+		<p id="e11p"><u>Solution</u>: click on the following button <button type="button" onclick="myE11Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e11Solution">
+
+		</div>
+		<script>
+			function myE11Function() {
+				let xSize = 200;
+				let ySize = 100;
+				d3.select("#e11Solution").select("svg").remove();
+				let svg = d3.select("#e11Solution")
+								.append("svg")
+								.attr('width', xSize)
+								.attr('height', ySize)
+								.style("border", '1px solid black');
+				svg.append("text")
+						.attr("x", xSize/3)
+						.attr("y", ySize/2)
+						.style("font-size","11px")
+						.style('fill', 'black')
+						.text("Hello World!")
+						.on("mouseover", function(event){
+							d3.select(this).transition()
+										.ease(d3.easeBounce)
+										.duration('100')
+										.style("font-size","15px")
+										.style('fill', 'blue');
+						})
+						.on("mouseout", function(event){
+							d3.select(this).transition()
+										.ease(d3.easeBounce)
+										.duration('100')
+										.style("font-size","11px")
+										.style('fill', 'black');
+						});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e12"><u>Exercise 12</u>: Add a third bar to the example above which starts to animate after 4 seconds
+	</h4>
+	<div>
+		<p id="e12p"><u>Solution</u>: click on the following button <button type="button" onclick="myE12Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e12Solution">
+
+		</div>
+		<script>
+			function myE12Function() {
+				d3.select("#e12Solution").select("svg").remove();
+				var svg = d3.select("#e12Solution")
+							.append("svg")
+							.attr("width", 250)
+							.attr("height", 200)
+							.style("border", '1px solid black');
+				var bar1 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 100)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar2 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 120)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar3 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 140)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				update(bar1,2000,0,100);
+				update(bar2,2000,2000,100);
+				update(bar3,2000,4000,100);
+			}
+			function update(bar,duration,delay,height) {
+				bar.transition()
+					.ease(d3.easeLinear)
+					.duration(duration)
+					.delay(delay)
+					.attr("height",height);
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e13"><u>Exercise 13</u>: Chain an additional ‘transition’ effect to the above example, so that after completing the transition, the bars ‘transition’ back to their original height (grow then shrink)
+	</h4>
+	<div>
+		<p id="e13p"><u>Solution</u>: click on the following button <button type="button" onclick="myE13Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e13Solution">
+
+		</div>
+		<script>
+			function myE13Function() {
+				d3.select("#e13Solution").select("svg").remove();
+				var svg = d3.select("#e13Solution")
+							.append("svg")
+							.attr("width", 250)
+							.attr("height", 200)
+							.style("border", '1px solid black');
+				var bar1 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 100)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar2 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 120)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar3 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 140)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				update(bar1,2000,0,100);
+				update(bar2,2000,2000,100);
+				update(bar3,2000,4000,100);
+				update(bar3,2000,6000,20);
+				update(bar2,2000,8000,20);
+				update(bar1,2000,10000,20)	
+			}
+			function update(bar,duration,delay,height) {
+				bar.transition()
+					.ease(d3.easeLinear)
+					.duration(duration)
+					.delay(delay)
+					.attr("height",height);
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e14"><u>Exercise 14</u>: Modify the transition effect so that the color also changes for the example above (e.g., blue to red)
+	</h4>
+	<div>
+		<p id="e14p"><u>Solution</u>: click on the following button <button type="button" onclick="myE14Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e14Solution">
+
+		</div>
+		<script>
+			function myE14Function() {
+				d3.select("#e14Solution").select("svg").remove();
+				var svg = d3.select("#e14Solution")
+							.append("svg")
+							.attr("width", 250)
+							.attr("height", 200)
+							.style("border", '1px solid black');
+				var bar1 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 100)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar2 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 120)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				var bar3 = svg.append("rect")
+								.attr("fill", "blue")
+								.attr("x", 140)
+								.attr("y", 20)
+								.attr("height", 20)
+								.attr("width", 10);
+				updateE14Bar(bar1,2000,0,100,"red");
+				updateE14Bar(bar2,2000,2000,100,"red");
+				updateE14Bar(bar3,2000,4000,100,"red");
+				updateE14Bar(bar3,2000,6000,20,"blue");
+				updateE14Bar(bar2,2000,8000,20,"blue");
+				updateE14Bar(bar1,2000,10000,20,"blue")	
+			}
+			function updateE14Bar(bar,duration,delay,height,color) {
+				bar.transition()
+					.ease(d3.easeLinear)
+					.duration(duration)
+					.delay(delay)
+					.attr("height",height)
+					.attr("fill",color);
+			}
+		</script>
+	</div>
+</body>
+</html>

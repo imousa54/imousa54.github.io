@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<style>
+		#e18p {line-height:1.6;}
+		#dataInputE18 {width:400px;}
+	</style>
+</head>
+<body>
+	<h2>Part 5: Changing Data and Transitioning</h2>
+	<span>Exercises covered in part 5</span>
+	<ul>
+		<li><a href="#e18">Exercise 18</a></li>
+		<li><a href="#e19">Exercise 19</a></li>
+		<li><a href="#e20">Exercise 20</a></li>
+		<li><a href="#e21">Exercise 21</a></li>
+		<li><a href="#e22">Exercise 22</a></li>
+		<li><a href="#e23">Exercise 23</a></li>
+	</ul>
+	<h4 id="e18"><u>Exercise 18</u>: Modify the example so that it has a 3rd data set (e.g., add extra button and an extra test data set to the top of the file)
+	</h4>
+	<div>
+		<p id="e18p"><u>Solution:</u> 
+		Update bar chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE18" name="dataSelectE18" onchange="updateDataSelectE18()">
+			<option value="Dataset 1">Dataset 1</option>
+			<option value="Dataset 2">Dataset 2</option>
+			<option value="Dataset 3">Dataset 3</option>
+		</select>
+		<input type="text" id="dataInputE18" name="dataInputE18" value="Dataset 1" disabled><br>
+		click on the following button <button type="button" onclick="myE18Function()">Click Me!</button> to update the bar graph data
+		</p>
+		<div id="e18Solution">
+
+		</div>
+		<script>
+			// Create 3 datasets for the bar chart
+			const data1 = [ {group: "A", value: 5},
+							{group: "B", value: 20},
+							{group: "C", value: 9} ];
+			const data2 = [ {group: "A", value: 10},
+							{group: "B", value: 2},
+							{group: "C", value: 22} ];
+			const data3 = [ {group: "A", value: 23},
+							{group: "B", value: 10},
+							{group: "C", value: 6} ];
+			// Set the dimensions and margins of the graph
+			const margin = {top: 30, right: 30, bottom: 70, left: 60};
+			const width = 460 - margin.left - margin.right;
+			const height = 400 - margin.top - margin.bottom;
+			// Append the svg object to the div with id e18Solution
+			var e18SVG = d3.select('#e18Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			var completeDataset = data1.concat(data2,data3);
+			// Define the scale and add the X axis
+			var xAxisScaleE18 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(completeDataset.map(function(d) { return d.group; }))
+									.padding(0.2);
+			e18SVG.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE18));
+			// Define the scale and add the Y axis
+			var yAxisScaleE18 = d3.scaleLinear()
+									.domain([0, d3.max(completeDataset, function(d) { return d.value;} )])
+									.range([ height, 0]);
+			e18SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE18));
+			
+			// Initialize the plot data with the first dataset
+			var selectedE18Datasource = data1;
+			// Create/update the plot with the selected dataset based on user action
+			function myE18Function() {
+				let bars = e18SVG.selectAll("rect").data(selectedE18Datasource);
+				bars.enter()
+					.append("rect")
+					.merge(bars)
+					.transition()
+						.ease(d3.easeElastic)
+						.duration(1000)
+						.attr("x", function(d) { return xAxisScaleE18(d.group); })
+						.attr("y", function(d) { return yAxisScaleE18(d.value); })
+						.attr("width", xAxisScaleE18.bandwidth())
+						.attr("height", function(d) { return height - yAxisScaleE18(d.value); })
+						.attr("fill", "#69b3a2");
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE18() {
+				let selectedIndex = document.getElementById("dataSelectE18").selectedIndex;
+				document.getElementById("dataInputE18").value = document.getElementById("dataSelectE18").value;
+				if(selectedIndex == 0) {
+					selectedE18Datasource = data1;
+				}
+				else if(selectedIndex == 1){
+					selectedE18Datasource = data2;
+				}
+				else if(selectedIndex == 2){
+					selectedE18Datasource = data3;
+				}
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e19"><u>Exercise 19</u>: Modify the example so that each data set is displayed in a different color (rectangle bars are drawn in a different color)
+	</h4>
+	<div>
+		<p id="e19p"><u>Solution:</u> 
+		Update bar chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE19" name="dataSelectE19" onchange="updateDataSelectE19()">
+			<option value="Dataset 1">Dataset 1</option>
+			<option value="Dataset 2">Dataset 2</option>
+			<option value="Dataset 3">Dataset 3</option>
+		</select>
+		<input type="text" id="dataInputE19" name="dataInputE19" value="Dataset 1" disabled><br>
+		click on the following button <button type="button" onclick="myE19Function()">Click Me!</button> to update the bar graph data
+		</p>
+		<div id="e19Solution">
+
+		</div>
+		<script>
+			// Define bar chart colors based on the datasets
+			const datasetColors = ["red", "green", "blue"];
+			// Append the svg object to the div with id e19Solution
+			var e19SVG = d3.select('#e19Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			// Define the scale and add the X axis
+			var xAxisScaleE19 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(completeDataset.map(function(d) { return d.group; }))
+									.padding(0.2);
+			e19SVG.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE19));
+			// Define the scale and add the Y axis
+			var yAxisScaleE19 = d3.scaleLinear()
+									.domain([0, d3.max(completeDataset, function(d) { return d.value;} )])
+									.range([ height, 0]);
+			e19SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE19));
+			
+			// Initialize the plot data with the first dataset
+			var selectedE19Datasource = data1;
+			var selectedE19DatasetColor = datasetColors[0];
+			// Create/update the plot with the selected dataset based on user action
+			function myE19Function() {
+				let bars = e19SVG.selectAll("rect").data(selectedE19Datasource);
+				bars.enter()
+					.append("rect")
+					.merge(bars)
+					.transition()
+						.ease(d3.easeElastic)
+						.duration(1000)
+						.attr("x", function(d) { return xAxisScaleE19(d.group); })
+						.attr("y", function(d) { return yAxisScaleE19(d.value); })
+						.attr("width", xAxisScaleE19.bandwidth())
+						.attr("height", function(d) { return height - yAxisScaleE19(d.value); })
+						.attr("fill", selectedE19DatasetColor);
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE19() {
+				let selectedIndex = document.getElementById("dataSelectE19").selectedIndex;
+				document.getElementById("dataInputE19").value = document.getElementById("dataSelectE19").value;
+				if(selectedIndex == 0) {
+					selectedE19Datasource = data1;
+					selectedE19DatasetColor = datasetColors[0];
+				}
+				else if(selectedIndex == 1){
+					selectedE19Datasource = data2;
+					selectedE19DatasetColor = datasetColors[1];
+				}
+				else if(selectedIndex == 2){
+					selectedE19Datasource = data3;
+					selectedE19DatasetColor = datasetColors[2];
+				}
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e20"><u>Exercise 20</u>: Add an additional ‘event’ so that when the ‘mouse’ moves over each bar it displays a text svg above the bar with the ‘value’ of the data
+	</h4>
+	<div>
+		<p id="e20p"><u>Solution:</u> 
+		Update bar chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE20" name="dataSelectE20" onchange="updateDataSelectE20()">
+			<option value="Dataset 1">Dataset 1</option>
+			<option value="Dataset 2">Dataset 2</option>
+			<option value="Dataset 3">Dataset 3</option>
+		</select>
+		<input type="text" id="dataInputE20" name="dataInputE20" value="Dataset 1" disabled><br>
+		click on the following button <button type="button" onclick="myE20Function()">Click Me!</button> to update the bar graph data
+		</p>
+		<div id="e20Solution">
+
+		</div>
+		<script>
+			// Append the svg object to the div with id e20Solution
+			var e20SVG = d3.select('#e20Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			// Define the scale and add the X axis
+			var xAxisScaleE20 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(completeDataset.map(function(d) { return d.group; }))
+									.padding(0.2);
+			e20SVG.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE20));
+			// Define the scale and add the Y axis
+			var yAxisScaleE20 = d3.scaleLinear()
+									.domain([0, d3.max(completeDataset, function(d) { return d.value;} )])
+									.range([ height, 0]);
+			e20SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE20));
+			// Initialize the plot data with the first dataset
+			var selectedE20Datasource = data1;
+			var selectedE20DatasetColor = datasetColors[0];
+			// Create/update the plot with the selected dataset based on user action
+			function myE20Function() {
+				let bars = e20SVG.selectAll("rect").data(selectedE20Datasource);
+				bars.enter()
+					.append("rect")
+					.merge(bars)
+					.on("mouseover", onMouseOverE20) //Add listener for the mouseover event
+					.on("mouseout", onMouseOutE20) //Add listener for the mouseout event
+					.transition()
+						.ease(d3.easeElastic)
+						.duration(1000)
+						.attr("x", function(d) { return xAxisScaleE20(d.group); })
+						.attr("y", function(d) { return yAxisScaleE20(d.value); })
+						.attr("width", xAxisScaleE20.bandwidth())
+						.attr("height", function(d) { return height - yAxisScaleE20(d.value); })
+						.attr("fill", selectedE20DatasetColor);
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE20() {
+				let selectedIndex = document.getElementById("dataSelectE20").selectedIndex;
+				document.getElementById("dataInputE20").value = document.getElementById("dataSelectE20").value;
+				if(selectedIndex == 0) {
+					selectedE20Datasource = data1;
+					selectedE20DatasetColor = datasetColors[0];
+				}
+				else if(selectedIndex == 1){
+					selectedE20Datasource = data2;
+					selectedE20DatasetColor = datasetColors[1];
+				}
+				else if(selectedIndex == 2){
+					selectedE20Datasource = data3;
+					selectedE20DatasetColor = datasetColors[2];
+				}
+			}
+			// Bar rectangle mouseover event handler function
+			function onMouseOverE20(mouseEvent, i) {
+				let xCurrent = Number(d3.select(this).attr('x'));
+				let yCurrent = Number(d3.select(this).attr('y'));
+				e20SVG.append("text")
+						.attr('class', 'val')
+						.attr('x', xCurrent + (xAxisScaleE20.bandwidth()/2))
+						.attr('y', yCurrent - 2)
+						.attr("text-anchor", "middle")
+						.text(i.value);
+			}
+
+			// Bar rectangle mouseout event handler function
+			function onMouseOutE20(mouseEvent, i) {
+				d3.select("#e20Solution").selectAll('.val').remove();
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e21"><u>Exercise 21</u>: Add an axis to the top and to the right of the bar chart (also displays an axis along the top and along the right of the chart)
+	</h4>
+	<div>
+		<p id="e21p"><u>Solution:</u> 
+		Update bar chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE21" name="dataSelectE21" onchange="updateDataSelectE21()">
+			<option value="Dataset 1">Dataset 1</option>
+			<option value="Dataset 2">Dataset 2</option>
+			<option value="Dataset 3">Dataset 3</option>
+		</select>
+		<input type="text" id="dataInputE21" name="dataInputE21" value="Dataset 1" disabled><br>
+		click on the following button <button type="button" onclick="myE21Function()">Click Me!</button> to update the bar graph data
+		</p>
+		<div id="e21Solution">
+
+		</div>
+		<script>
+			// Append the svg object to the div with id e21Solution
+			var e21SVG = d3.select('#e21Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			// Define the scale and add the X axis (Bottom and Top)
+			var xAxisScaleE21 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(completeDataset.map(function(d) { return d.group; }))
+									.padding(0.2);
+			e21SVG.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE21));
+			e21SVG.append("g")
+					.call(d3.axisTop(xAxisScaleE21));
+			// Define the scale and add the Y axis
+			var yAxisScaleE21 = d3.scaleLinear()
+									.domain([0, d3.max(completeDataset, function(d) { return d.value;} )])
+									.range([ height, 0]);
+			e21SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE21));
+			e21SVG.append("g")
+					.attr("transform", "translate(" + width + ",0)")
+					.call(d3.axisRight(yAxisScaleE21));
+			// Initialize the plot data with the first dataset
+			var selectedE21Datasource = data1;
+			var selectedE21DatasetColor = datasetColors[0];
+			// Create/update the plot with the selected dataset based on user action
+			function myE21Function() {
+				let bars = e21SVG.selectAll("rect").data(selectedE21Datasource);
+				bars.enter()
+					.append("rect")
+					.merge(bars)
+					.on("mouseover", onMouseOverE21) //Add listener for the mouseover event
+					.on("mouseout", onMouseOutE21) //Add listener for the mouseout event
+					.transition()
+						.ease(d3.easeElastic)
+						.duration(1000)
+						.attr("x", function(d) { return xAxisScaleE21(d.group); })
+						.attr("y", function(d) { return yAxisScaleE21(d.value); })
+						.attr("width", xAxisScaleE21.bandwidth())
+						.attr("height", function(d) { return height - yAxisScaleE21(d.value); })
+						.attr("fill", selectedE21DatasetColor);
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE21() {
+				let selectedIndex = document.getElementById("dataSelectE21").selectedIndex;
+				document.getElementById("dataInputE21").value = document.getElementById("dataSelectE21").value;
+				if(selectedIndex == 0) {
+					selectedE21Datasource = data1;
+					selectedE21DatasetColor = datasetColors[0];
+				}
+				else if(selectedIndex == 1){
+					selectedE21Datasource = data2;
+					selectedE21DatasetColor = datasetColors[1];
+				}
+				else if(selectedIndex == 2){
+					selectedE21Datasource = data3;
+					selectedE21DatasetColor = datasetColors[2];
+				}
+			}
+			// Bar rectangle mouseover event handler function
+			function onMouseOverE21(mouseEvent, i) {
+				let xCurrent = Number(d3.select(this).attr('x'));
+				let yCurrent = Number(d3.select(this).attr('y'));
+				e21SVG.append("text")
+						.attr('class', 'val')
+						.attr('x', xCurrent + (xAxisScaleE21.bandwidth()/2))
+						.attr('y', height - 2)
+						.attr("text-anchor", "middle")
+						.text(i.value);
+			}
+
+			// Bar rectangle mouseout event handler function
+			function onMouseOutE21(mouseEvent, i) {
+				d3.select("#e21Solution").selectAll('.val').remove();
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e22"><u>Exercise 22</u>: Update the example so that the data sets can be different sizes (e.g., [A,B,C] but the second data set could have [A,B,C,D]). You’ll need to update the ‘axis’ details (range) and extra details to ‘remove’ (fade away unused elements using ‘exit’)
+	</h4>
+	<div>
+		<p id="e22p"><u>Solution:</u> 
+		Update bar chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE22" name="dataSelectE22" onchange="updateDataSelectE22()">
+			<option value="Dataset 4">Dataset 4</option>
+			<option value="Dataset 5">Dataset 5</option>
+			<option value="Dataset 6">Dataset 6</option>
+		</select>
+		<input type="text" id="dataInputE22" name="dataInputE22" value="Dataset 4" disabled><br>
+		click on the following button <button type="button" onclick="myE22Function()">Click Me!</button> to update the bar graph data
+		</p>
+		<div id="e22Solution">
+
+		</div>
+		<script>
+			// Create 3 additional datasets for the bar chart
+			const data4 = [ {group: "A", value: 10},
+							{group: "B", value: 15},
+							{group: "C", value: 22},
+							{group: "D", value: 18} ];
+			const data5 = [ {group: "A", value: 5},
+							{group: "B", value: 14},
+							{group: "C", value: 12} ];
+			const data6 = [ {group: "A", value: 24},
+							{group: "B", value: 8} ];
+			var completeDatasetE22 = data4.concat(data5,data6);
+			// Append the svg object to the div with id e22Solution
+			var e22SVG = d3.select('#e22Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			// Initialize the plot data with the first dataset
+			var selectedE22Datasource = data4;
+			var selectedE22DatasetColor = datasetColors[0];
+			// Define the scale and add the X axis (Bottom and Top)
+			var xAxisScaleE22 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(selectedE22Datasource.map(function(d) { return d.group; }))
+									.padding(0.2);
+			e22SVG.append("g")
+					.attr("class","e22XAxis")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE22));
+			e22SVG.append("g")
+					.attr("class","e22XAxis")
+					.call(d3.axisTop(xAxisScaleE22));
+			// Define the scale and add the Y axis
+			var yAxisScaleE22 = d3.scaleLinear()
+									.domain([0, d3.max(completeDatasetE22, function(d) { return d.value;} )])
+									.range([ height, 0]);
+			e22SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE22));
+			e22SVG.append("g")
+					.attr("transform", "translate(" + width + ",0)")
+					.call(d3.axisRight(yAxisScaleE22));
+			
+			// Create/update the plot with the selected dataset based on user action
+			function myE22Function() {
+				// Select and remove top and bottom X axises
+				e22SVG.selectAll(".e22XAxis").remove();
+				// Update X axis scale with the new domain of selected dataset
+				xAxisScaleE22 = d3.scaleBand()
+									.range([ 0, width ])
+									.domain(selectedE22Datasource.map(function(d) { return d.group; }))
+									.padding(0.2);
+				// Add new X axises (top and bottom)
+				e22SVG.append("g")
+						.attr("class","e22XAxis")
+						.attr("transform", "translate(0," + height + ")")
+						.call(d3.axisBottom(xAxisScaleE22));
+				e22SVG.append("g")
+						.attr("class","e22XAxis")
+						.call(d3.axisTop(xAxisScaleE22));
+						
+				let bars = e22SVG.selectAll("rect").data(selectedE22Datasource);
+				// Fade away the unused rectangle bars using 'exit' and 'opacity'
+				bars.exit().transition().duration(500).style('opacity', 0);  
+				bars.enter()
+					.append("rect")
+					.merge(bars)
+					.on("mouseover", onMouseOverE22) //Add listener for the mouseover event
+					.on("mouseout", onMouseOutE22) //Add listener for the mouseout event
+					.transition()
+						.ease(d3.easeElastic)
+						.duration(1000)
+						.attr("x", function(d) { return xAxisScaleE22(d.group); })
+						.attr("y", function(d) { return yAxisScaleE22(d.value); })
+						.attr("width", xAxisScaleE22.bandwidth())
+						.attr("height", function(d) { return height - yAxisScaleE22(d.value); })
+						.attr("fill", selectedE22DatasetColor)
+						.style('opacity', 1);
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE22() {
+				let selectedIndex = document.getElementById("dataSelectE22").selectedIndex;
+				document.getElementById("dataInputE22").value = document.getElementById("dataSelectE22").value;
+				if(selectedIndex == 0) {
+					selectedE22Datasource = data4;
+					selectedE22DatasetColor = datasetColors[0];
+				}
+				else if(selectedIndex == 1){
+					selectedE22Datasource = data5;
+					selectedE22DatasetColor = datasetColors[1];
+				}
+				else if(selectedIndex == 2){
+					selectedE22Datasource = data6;
+					selectedE22DatasetColor = datasetColors[2];
+				}
+			}
+			// Bar rectangle mouseover event handler function
+			function onMouseOverE22(mouseEvent, i) {
+				let xCurrent = Number(d3.select(this).attr('x'));
+				let yCurrent = Number(d3.select(this).attr('y'));
+				e22SVG.append("text")
+						.attr('class', 'val')
+						.attr('x', xCurrent + (xAxisScaleE22.bandwidth()/2))
+						.attr('y', height - 2)
+						.attr("text-anchor", "middle")
+						.text(i.value);
+			}
+
+			// Bar rectangle mouseout event handler function
+			function onMouseOutE22(mouseEvent, i) {
+				d3.select("#e22Solution").selectAll('.val').remove();
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e23"><u>Exercise 23</u>: Extend the concept of the ‘bar chart’, however, instead draw a ‘line graph’ with two data sets that ‘transition’ between them when you select a button (as you did for the bar graph example above)
+	</h4>
+	<div>
+		<p id="e23p"><u>Solution:</u> 
+		Update line graph data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE23" name="dataSelectE23" onchange="updateDataSelectE23()">
+			<option value="Sin Function">Sin Function</option>
+			<option value="Cos Function">Cos Function</option>	
+			<option value="Linear Function">Linear Function</option>
+		</select>
+		<input type="text" id="dataInputE23" name="dataInputE23" value="Sin Function" disabled><br>
+		click on the following button <button type="button" onclick="myE23Function()">Click Me!</button> to run the code and display the graph
+		</p>
+		<div id="e23Solution">
+
+		</div>
+		<script>
+			// Initialize 3 datasets for the line graph
+			var sinData = [];
+			var cosData = [];
+			var linearData = [];
+			var sinMarkerData = [];
+			var cosMarkerData = [];
+			var linearMarkerData = [];
+			// Genarate sin, cos and linear graph data
+			for (let i = 0; i < 100; i++) { 
+				// Create sin function Points
+				sinData.push( {x: i/100, y: Math.sin( 6.2 * i/100 ) } );
+				// Create cos function Points
+				cosData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+				// Create linear function Points
+				linearData.push( {x: i/100, y: (2*i/100) - 1 } ); 
+				// Create marker data points for sin, cos and linear function
+				if (i > 0 && i % 10 == 0) {
+					sinMarkerData.push( {x: i/100, y: Math.sin( 6.2 * i/100 ) } );
+					cosMarkerData.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); 
+					linearMarkerData.push( {x: i/100, y: (2*i/100) - 1 } ); 
+				}
+			}
+			// Append the svg object to the div with id e23Solution
+			var e23SVG = d3.select('#e23Solution')
+							.append('div')
+							.append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+			// Initialize the plot data with the first dataset
+			var selectedE23Datasource = sinData;
+			var selectedE23MarkerDatasource = sinMarkerData;
+			var selectedE23DatasetColor = datasetColors[0];
+			var circleMarkerRadius = 5;
+			// Get the 'limits' of the data - the full extent (mins and max)
+			var xExtent = d3.extent( selectedE23Datasource, d=>{ return d.x } );
+			var yExtent = d3.extent( selectedE23Datasource, d=>{ return d.y } );
+			// Define the scale and add the X axis (Bottom and Top)
+			var xAxisScaleE23 = d3.scaleLinear()
+									.range([ 0, width ])
+									.domain([ xExtent[0], xExtent[1] ]);
+			e23SVG.append("g")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(xAxisScaleE23));
+			e23SVG.append("g")
+					.call(d3.axisTop(xAxisScaleE23));
+			// Define the scale and add the Y axis
+			var yAxisScaleE23 = d3.scaleLinear()
+									.domain([ yExtent[0], yExtent[1] ])
+									.range([ height, 0]);
+			e23SVG.append("g")
+					.call(d3.axisLeft(yAxisScaleE23));
+			e23SVG.append("g")
+					.attr("transform", "translate(" + width + ",0)")
+					.call(d3.axisRight(yAxisScaleE23));
+			// Create the path graph with lineGraph class
+			e23SVG.append("path")
+						.attr("class","lineGraph")
+						.attr("fill", "none");
+			myE23Function();
+			// Update the plot with the selected dataset based on user action
+			function myE23Function() {
+				e23SVG.select(".lineGraph")
+						.datum(selectedE23Datasource)
+						.transition()
+							.ease(d3.easeElastic)
+							.duration(1000)
+							.attr("stroke", selectedE23DatasetColor)
+							.attr("d", d3.line()
+								.x(function(d) { return xAxisScaleE23(d.x) })
+								.y(function(d) { return yAxisScaleE23(d.y) })
+							);
+ 
+				let circleMarkers = e23SVG.selectAll("circle").data(selectedE23MarkerDatasource);
+				// Fade away the unused circle markers using 'exit' and 'opacity'
+				circleMarkers.exit().transition().duration(500).style('opacity', 0);  
+				circleMarkers.enter()
+						.append("circle")
+						.merge(circleMarkers)
+						.on("mouseover", onMouseOverE23) //Add listener for the mouseover event
+						.on("mouseout", onMouseOutE23) //Add listener for the mouseout event
+						.attr("r", circleMarkerRadius)
+						.transition()
+							.ease(d3.easeElastic)
+							.duration(1000)
+							.attr("cx", function(d) { return xAxisScaleE23(d.x); })
+							.attr("cy", function(d) { return yAxisScaleE23(d.y); })
+							.attr("fill", selectedE23DatasetColor)
+							.style('opacity', 1);
+							
+			}
+			// Circle marker mouseover event handler function
+			function onMouseOverE23(mouseEvent, i) {
+				let xCurrent = Number(d3.select(this).attr('x'));
+				let yCurrent = Number(d3.select(this).attr('y'));
+				d3.select(this).transition()
+								.duration('250')
+								.attr("r", circleMarkerRadius * 1.5);
+				e23SVG.append("text")
+						.attr('class', 'val')
+						.attr('x', xAxisScaleE23(i.x) + (circleMarkerRadius * 1.5) + 2)
+						.attr('y', yAxisScaleE23(i.y))
+						.style("font-size", "11")
+						.text("("+ i.x.toFixed(2) +"," + i.y.toFixed(2) + ")");
+			}
+
+			// Circle marker mouseout event handler function
+			function onMouseOutE23(mouseEvent, i) {
+				d3.select(this).transition()
+										.duration('250')
+										.attr("r", circleMarkerRadius);
+				d3.select("#e23Solution").selectAll('.val').remove();
+			}
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE23() {
+				let selectedIndex = document.getElementById("dataSelectE23").selectedIndex;
+				document.getElementById("dataInputE23").value = document.getElementById("dataSelectE23").value;
+				if(selectedIndex == 0) {
+					selectedE23Datasource = sinData;
+					selectedE23MarkerDatasource = sinMarkerData;
+					selectedE23DatasetColor = datasetColors[0];
+				}
+				else if(selectedIndex == 1){
+					selectedE23Datasource = cosData;
+					selectedE23MarkerDatasource = cosMarkerData;
+					selectedE23DatasetColor = datasetColors[1];
+				}
+				else if(selectedIndex == 2){
+					selectedE23Datasource = linearData;
+					selectedE23MarkerDatasource = linearMarkerData;
+					selectedE23DatasetColor = datasetColors[2];
+				}
+			}
+		</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 2: Events</h2>
+	<span>Exercises covered in part 2 </span>
+	<ul>
+		<li><a href="#e3">Exercise 3</a></li>
+		<li><a href="#e4">Exercise 4</a></li>
+		<li><a href="#e5">Exercise 5</a></li>
+	</ul>
+	<h4 id="e3"><u>Exercise 3</u>: Modify the above example so in addition to the color changing, other styles change (e.g., size and border styles)
+	</h4>
+	<div>
+		<p id="e3p"><u>Solution</u>: click on the following button <button type="button" onclick="myE3Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e3Solution">
+
+		</div>
+		<script>
+			function myE3Function() {
+				d3.select("#e3Solution").selectAll(".e3Div").remove();
+				d3.select("#e3Solution")
+					.append("div")
+					.attr("class","e3Div")
+					.style("width", "100px")
+					.style("height", "20px")
+					.style("background-color", "green");
+				d3.select(".e3Div")
+					.on("mouseover", function(event){
+						d3.select(this)
+							.style("background-color", "orange")
+							.style("width", "200px")
+							.style("height", "40px")
+							.style("border", '1px solid blue')
+							.text("Mouse Over");
+					})
+					.on("mouseout", function(){
+						d3.select(this)
+							.style("background-color", "steelblue")
+							.style("width", "100px")
+							.style("height", "20px")
+							.style("border", '1px solid red')
+							.text("Mouse Out");
+					});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e4"><u>Exercise 4</u>: Based on the example above, instead of a ‘div’ element, use an ‘svg’ container and add a ‘circle’ svg. When the mouse moves over the svg circle, change the radius (e.g., larger when the mouse moves over and back to the default size when the mouse moves out)
+	</h4>
+	<div>
+		<p id="e4p"><u>Solution</u>: click on the following button <button type="button" onclick="myE4Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e4Solution">
+
+		</div>
+		<script>
+			function myE4Function() {
+				let xSize = 250;
+				let ySize = 250;
+				d3.select("#e4Solution").select("svg").remove();
+				let svg = d3.select("#e4Solution")
+								.append("svg")
+								.attr('width', xSize)
+								.attr('height', ySize)
+								.style("border", '1px solid black');
+				let r = 50;
+				svg.append("circle")
+					.attr("cx", xSize/2)
+					.attr("cy", ySize/2)
+					.attr("r", r)
+					.style("fill", "blue")
+					.on("mouseover", function(event){
+						d3.select(this).transition()
+										.duration('250')
+										.attr("r", r * 2);
+					})
+					.on("mouseout", function(){
+						d3.select(this).transition()
+										.duration('250')
+										.attr("r", r);
+					});
+					
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e5"><u>Exercise 5</u>: The "d3.pointer” method lets you get the mouse position. When the mouse moves over the ‘svg’
+	container, add a ‘text’ svg element at the location of the mouse position. As the mouse cursor moves around the svg
+	container, have the text move to the cursor position (i.e., text follows the mouse cursor)
+	</h4>
+	<div>
+		<p id="e5p"><u>Solution</u>: click on the following button <button type="button" onclick="myE5Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e5Solution">
+
+		</div>
+		<script>
+			function myE5Function() {
+				let xSize = 400;
+				let ySize = 400;
+				d3.select("#e5Solution").select("svg").remove();
+				let svg = d3.select("#e5Solution")
+								.append("svg")
+								.attr('width', xSize)
+								.attr('height', ySize)
+								.style("border", '1px solid black')
+								.on("mouseover", function(event){
+									let coordinates = d3.pointer(event);
+									d3.select(this).select(".e5SolutionText").remove();
+									d3.select(this).append("text")
+													.attr("class","e5SolutionText")
+													.attr("x",coordinates[0] + 5)
+													.attr("y",coordinates[1])
+													.text("(" + coordinates + ")");
+								})
+								.on("mousemove", function(event){
+									let coordinates = d3.pointer(event);
+									d3.select(this).select(".e5SolutionText")
+													.attr("x",coordinates[0] + 5)
+													.attr("y",coordinates[1])
+													.text("(" + coordinates + ")");
+								});
+			}
+		</script>
+	</div>
+</body>
+</html>

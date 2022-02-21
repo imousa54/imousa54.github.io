@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<style>
+		#e27p {line-height:1.6;}
+		#dataInputE27 {width:500px;}
+	</style>
+</head>
+<body>
+	<h2>Part 6: Pie Chart</h2>
+	<span>Exercises covered in part 6</span>
+	<ul>
+		<li><a href="#e24">Exercise 24</a></li>
+		<li><a href="#e25">Exercise 25</a></li>
+		<li><a href="#e26">Exercise 26</a></li>
+		<li><a href="#e27">Exercise 27</a></li>
+	</ul>
+	<h4 id="e24"><u>Exercise 24</u>: What is the output for the example above (and why)?
+	</h4>
+	<div>
+		<p id="e24p"><u>Solution</u>: d3.interpolate is interpolation function in D3.js that is used to blend two values that can be arrays, numbers, colors, strings or objects. The returned interpolator function takes one parameter (number) in the domain [0.0, 1.0].
+		</p>
+		<div id="e24Solution">
+			<p><u>Example</u>: let interpolateE1 = d3.interpolate([20, 40, 4], [1, 12, 10])</p>
+			<ul>
+				<li>Type of variable <b>"interpolateE1"</b> is <b><span id="e24SolutionV0"></span></b></li>
+				<li>Value of interpolateE1(0.0) is <b><span id="e24SolutionV1"></span></b> <u>Why?</u> interpolateE1(0.0) is equivalent to the first initial defined parameter passed to interpolator function.</li>
+				<li>Value of interpolateE1(0.2) is <b><span id="e24SolutionV2"></span></b> <u>Why?</u> by blending the two arrays values, starting from 20 to 1 for first indexed value (20 - ((20-1) * 0.2)) will be equals to 16.2</li>
+				<li>Value of interpolateE1(0.5) is <b><span id="e24SolutionV3"></span></b> <u>Why?</u> by blending the two arrays values, starting from 20 to 1 for first indexed value (20 - ((20-1) * 0.5)) will be equals to 10.5</li>
+				<li>Value of interpolateE1(1.0) is <b><span id="e24SolutionV4"></span></b> <u>Why?</u> interpolateE1(1.0) is equivalent to the second initial defined parameter passed to interpolator function.</li>
+			</ul>
+		</div>
+		<script>
+			let interpolateE1 = d3.interpolate([20, 40, 4], [1, 12, 10]);
+			d3.select("#e24SolutionV0").text(typeof (interpolateE1));
+			d3.select("#e24SolutionV1").text(interpolateE1(0.0));
+			d3.select("#e24SolutionV2").text(interpolateE1(0.2));
+			d3.select("#e24SolutionV3").text(interpolateE1(0.5));
+			d3.select("#e24SolutionV4").text(interpolateE1(1.0));
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e25"><u>Exercise 25</u>: What is the interpolated color value for the above code (and why)?
+	</h4>
+	<div>
+		<p id="e25p"><u>Solution</u>: d3.interpolate is interpolation function in D3.js that is used to blend two values that can be arrays, numbers, colors, strings or objects. The returned interpolator function takes one parameter (number) in the domain [0.0, 1.0].
+		</p>
+		<div id="e25olution">
+			<p><u>Example</u>: let interpolateE2 = d3.interpolate('red', 'green')</p>
+			<ul>
+				<li>Type of variable <b>"interpolateE2"</b> is <b><span id="e25SolutionV0"></span></b></li>
+				<li>Value of interpolateE2(0.0) is <b><span id="e25SolutionV1"></span></b> <u>Why?</u> interpolateE2(0.0) is equivalent to the first initial defined parameter passed to interpolator function.</li>
+				<li>Value of interpolateE2(0.5) is <b><span id="e25SolutionV2"></span></b> <u>Why?</u> by blending the color values, starting from red to green and provide new color in the middle</li>
+				<li>Value of interpolateE2(1.0) is <b><span id="e25SolutionV3"></span></b> <u>Why?</u> interpolateE2(1.0) is equivalent to the second initial defined parameter passed to interpolator function.</li>
+			</ul>
+		</div>
+		<script>
+			let interpolateE2 = d3.interpolate('red', 'green');
+			d3.select("#e25SolutionV0").text(typeof (interpolateE2));
+			d3.select("#e25SolutionV1").style("color",interpolateE2(0.0)).text(interpolateE2(0.0));
+			d3.select("#e25SolutionV2").style("color",interpolateE2(0.5)).text(interpolateE2(0.5));
+			d3.select("#e25SolutionV3").style("color",interpolateE2(1.0)).text(interpolateE2(1.0));
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e26"><u>Exercise 26</u>: How would you interpolate a ‘date’ using D3? (show an example in code)
+	</h4>
+	<div>
+		<p id="e26p"><u>Solution</u>: d3.interpolate is interpolation function in D3.js that is used to blend two values that can be arrays, numbers, colors, strings or objects. The returned interpolator function takes one parameter (number) in the domain [0.0, 1.0].
+		</p>
+		<div id="e26olution">
+			<p><u>Example</u>: let interpolateE3 = d3.interpolate(new Date("2022-01-01"), new Date("2022-12-31"))</p>
+			<ul>
+				<li>Type of variable <b>"interpolateE3"</b> is <b><span id="e26SolutionV0"></span></b></li>
+				<li>Value of interpolateE3(0.0) is <b><span id="e26SolutionV1"></span></b> <u>Why?</u> interpolateE3(0.0) is equivalent to the first initial defined parameter passed to interpolator function.</li>
+				<li>Value of interpolateE3(0.5) is <b><span id="e26SolutionV2"></span></b> <u>Why?</u> by blending the two dates values, starting from 2022-01-01 to 2022-12-31 and provide new date in the middle</li>
+				<li>Value of interpolateE3(1.0) is <b><span id="e26SolutionV3"></span></b> <u>Why?</u> interpolateE3(1.0) is equivalent to the second initial defined parameter passed to interpolator function.</li>
+			</ul>
+		</div>
+		<script>
+			let interpolateE3 = d3.interpolate(new Date("2022-01-01"), new Date("2022-12-31"));
+			d3.select("#e26SolutionV0").text(typeof (interpolateE3));
+			d3.select("#e26SolutionV1").text(interpolateE3(0.0));
+			d3.select("#e26SolutionV2").text(interpolateE3(0.5));
+			d3.select("#e26SolutionV3").text(interpolateE3(1.0));
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e27"><u>Exercise 27</u>: Add an additional data set and modify to the code so the ‘pie chart’ transitions (animated) between the currently displayed data set and your new test data set (e.g., click button the pie chart segments animate to new data values). Note, all the segments should not ‘pop’ out/in but should transition smoothly
+	</h4>
+	<div>
+		<p id="e27p"><u>Solution:</u> 
+		Update pie chart data source by choosing from the below predefined datasets droplist<br>
+		<select id="dataSelectE27" name="dataSelectE27" onchange="updateDataSelectE27()">
+			<option value="Apple Dataset">Apples Dataset</option>
+			<option value="Banana Dataset">Banana Dataset</option>
+			<option value="Orange Dataset">Orange Dataset</option>
+			<option value="Avocado Dataset">Avocado Dataset</option>
+			<option value="Kiwi Dataset">Kiwi Dataset</option>
+		</select>
+		<input type="text" id="dataInputE27" name="dataInputE27" value="Apples Dataset" disabled><br>
+		click on the following button <button type="button" onclick="myE27Function()">Click Me!</button> to update the pie graph data
+		</p>
+		<div id="e27Solution">
+
+		</div>
+		<script>
+			var dataset = { apples: [5345, 2879, 1997, 2437, 4045],
+							bananas: [3200, 8100, 3200, 1100, 1100], 
+							oranges: [1100, 3200, 3200, 1100, 8100], 
+							Avocado: [1100, 3200, 3200, 1100], 
+							Kiwi: [500,500] };
+
+			var width = 460,
+				height = 300,
+				radius = Math.min(width, height) / 2;
+			// Append SVG Object to the selected div with id equals e27Solution
+			var svg = d3.select("#e27Solution")
+						.append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+			var color = d3.scaleOrdinal().range(d3.schemeSet3);
+			
+			// Generate the pie
+			var pie = d3.pie().sort(null);
+			// Generate the arcs
+			var arc = d3.arc()
+						.innerRadius(radius - 100)
+						.outerRadius(radius - 50);
+			// Initialize the selected dataset with the apples dataset
+			var selectedE27Datasource = dataset.apples;
+			updateDataSelectE27();
+			myE27Function();
+			
+			function myE27Function() {
+				/* 
+				Prepare the transition data to ensure that 
+				- added additional data transition will start from path with 0 data
+				- and discarded transition ones will end to path with 0 data 
+				*/
+				prepareData();
+				// Map the previous prepared data to the current SVG
+				svg.selectAll("path")
+					.data(pie(previousSelectedE27Datasource))
+					.enter()
+					.append("path")
+					.attr("fill", function(d, i) { return color(i); });
+				// Do the transition from the previous to the selected data
+				svg.selectAll("path")
+					.data(pie(selectedE27Datasource))
+					.transition()
+					.duration(1000)
+					.attrTween("d", function(d) {
+						let currentPath = this;
+						let i = d3.interpolate(currentPath._current, d);
+						return function(t) {
+							currentPath._current = i(t);
+							return arc(currentPath._current);
+						};     
+					});
+			}
+			
+			/* 
+			Prepare the transition data to ensure that 
+			- added additional data transition will start from path with 0 data
+			- and discarded transition ones will end to path with 0 data 
+			*/
+			function prepareData() {
+				let previousLength = previousSelectedE27Datasource.length;
+				let selectedLength = selectedE27Datasource.length;
+				if (previousLength > selectedLength) {
+					let selected = new Array(previousLength).fill(0);
+					for (i = 0; i < selectedLength; i++) {
+						selected[i] = selectedE27Datasource[i];
+					}
+					selectedE27Datasource = selected;
+				}
+				else if (previousLength < selectedLength) {
+					let previous = new Array(selectedLength).fill(0);
+					for (i = 0; i < previousLength; i++) {
+						previous[i] = previousSelectedE27Datasource[i];
+					}
+					previousSelectedE27Datasource = previous;
+				}
+				console.log(previousSelectedE27Datasource);
+				console.log(selectedE27Datasource);
+			}
+			
+			// Update datasource by onchange event handler based on user action
+			function updateDataSelectE27() {
+				previousSelectedE27Datasource = selectedE27Datasource;
+				let selectedIndex = document.getElementById("dataSelectE27").selectedIndex;
+				if(selectedIndex == 0) {
+					selectedE27Datasource = dataset.apples;
+					document.getElementById("dataInputE27").value = document.getElementById("dataSelectE27").value 
+																	+ " : [" + dataset.apples + "]";
+				}
+				else if(selectedIndex == 1){
+					selectedE27Datasource = dataset.bananas;
+					document.getElementById("dataInputE27").value = document.getElementById("dataSelectE27").value 
+																	+ " : [" + dataset.bananas + "]";
+				}
+				else if(selectedIndex == 2){
+					selectedE27Datasource = dataset.oranges;
+					document.getElementById("dataInputE27").value = document.getElementById("dataSelectE27").value 
+																	+ " : [" + dataset.oranges + "]";
+				}
+				else if(selectedIndex == 3){
+					selectedE27Datasource = dataset.Avocado;
+					document.getElementById("dataInputE27").value = document.getElementById("dataSelectE27").value 
+																	+ " : [" + dataset.Avocado + "]";
+				}
+				else if(selectedIndex == 4){
+					selectedE27Datasource = dataset.Kiwi;
+					document.getElementById("dataInputE27").value = document.getElementById("dataSelectE27").value 
+																	+ " : [" + dataset.Kiwi + "]";
+				}
+			}
+		</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../../../images/icon.svg">
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+<body>
+	<h2>Part 7: D3 Force layout</h2>
+	<span>Exercises covered in part 7</span>
+	<ul>
+		<li><a href="#e28">Exercise 28</a></li>
+		<li><a href="#e29">Exercise 29</a></li>
+		<li><a href="#e30">Exercise 30</a></li>
+		<li><a href="#e31">Exercise 31</a></li>
+		<li><a href="#e32">Exercise 32</a></li>
+	</ul>
+	<h4 id="e28"><u>Exercise 28</u>: For the example above, modify the code so that each sphere is displayed as a different color
+	</h4>
+	<div>
+		<p id="e28p"><u>Solution</u>: click on the following button <button type="button" onclick="myE28Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e28Solution">
+
+		</div>
+		<script>
+			function myE28Function() {
+				var width = 400, height = 400;
+				d3.select('#e28Solution').selectAll('svg').remove();
+				d3.select('#e28Solution').append('svg').attr('width',width).attr('height',height);
+				// generate some random data
+				var numNodes = 100;
+				var nodes = d3.range(numNodes)
+							  .map(function(d) {
+									return {radius: Math.random() * 25};
+							   });
+				console.log(nodes);
+				var simulation = d3.forceSimulation(nodes)
+									.force('charge', d3.forceManyBody().strength(5))
+									.force('center', d3.forceCenter(width / 2, height / 2))
+									.force('collision', d3.forceCollide().radius(function(d) {
+											return d.radius;
+										}))
+									.on('tick', ticked);
+				function ticked() {
+					d3.select('#e28Solution').select('svg')
+						.selectAll('circle')
+						.data(nodes)
+						.join('circle')
+						.attr('fill', function(d,i) {
+										return d3.interpolateRainbow(i/nodes.length);
+									})
+						.attr('r', function(d) {
+										return d.radius;
+									})
+						.attr('cx', function(d) {
+										return d.x;
+									})
+						.attr('cy', function(d) {
+										return d.y;
+									});
+				}
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e29"><u>Exercise 29</u>: For the example above, instead of the data getting generated randomly, modify the code so the data is defined either an inline array or from an external source (e.g., csv/json)
+	</h4>
+	<div>
+		<p id="e29p"><u>Solution</u>: click on the following button <button type="button" onclick="myE29Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e29Solution">
+
+		</div>
+		<script>
+			function myE29Function() {
+				var width = 400, height = 400;
+				d3.select('#e29Solution').selectAll('svg').remove();
+				d3.select('#e29Solution').append('svg').attr('width',width).attr('height',height);
+
+				var numNodes = 100;
+				var nodes = d3.range(numNodes)
+							  .map(function(d) {
+									return {radius: Math.random() * 25};
+							   });
+				var csvFile = "https://imousa54.github.io/data/lab2_part7.csv";
+				d3.csv(csvFile).then(function(data) {
+					var simulation = d3.forceSimulation(data)
+										.force('charge', d3.forceManyBody().strength(5))
+										.force('center', d3.forceCenter(width / 2, height / 2))
+										.force('collision', d3.forceCollide().radius(function(d) {
+												return d.radius;
+											}))
+										.on('tick', ticked);
+					function ticked() {
+						d3.select('#e29Solution').select('svg')
+							.selectAll('circle')
+							.data(data)
+							.join('circle')
+							.attr('fill', function(d,i) {
+											return d3.interpolateRainbow(i/data.length);
+										})
+							.attr('r', function(d) {
+											return d.radius;
+										})
+							.attr('cx', function(d) {
+											return d.x;
+										})
+							.attr('cy', function(d) {
+											return d.y;
+										});
+					}
+				});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e30"><u>Exercise 30</u>: Update the example, so each of the spheres displays extra information when the mouse cursor moves over them (e.g., popup text)
+	</h4>
+	<div>
+		<p id="e30p"><u>Solution</u>: click on the following button <button type="button" onclick="myE30Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e30Solution">
+
+		</div>
+		<script>
+			function myE30Function() {
+				var width = 400, height = 400;
+				d3.select('#e30Solution').selectAll('svg').remove();
+				d3.select('#e30Solution').append('svg').attr('width',width).attr('height',height);
+
+				var numNodes = 100;
+				var nodes = d3.range(numNodes)
+							  .map(function(d) {
+									return {radius: Math.random() * 25};
+							   });
+				var csvFile = "https://imousa54.github.io/data/lab2_part7.csv";
+				d3.csv(csvFile).then(function(data) {
+					var simulation = d3.forceSimulation(data)
+										.force('charge', d3.forceManyBody().strength(5))
+										.force('center', d3.forceCenter(width / 2, height / 2))
+										.force('collision', d3.forceCollide().radius(function(d) {
+												return d.radius;
+											}))
+										.on('tick', ticked);
+					function ticked() {
+						let svg = d3.select('#e30Solution').select('svg');
+						let circleGroup = svg.selectAll("g")
+											.data(data)
+											.join(function(group) {
+														var enter = group.append("g");
+														enter.append("circle");
+														return enter;
+													})
+											.attr("transform", function(d) {
+																	return "translate("+ d.x +"," + d.y + ")";
+																})
+											.on("mouseenter ", onMouseEnter)
+											.on("mouseleave", onMouseLeave);
+						circleGroup.select("circle")
+									.attr('r', function(d) { return d.radius; })
+									.attr('fill', function(d,i) {
+											return d3.interpolateRainbow(i/data.length);
+										});
+										
+						// Spheres Group mouseenter event handler function
+						function onMouseEnter(mouseEvent, i) {
+							d3.select(this).append("text")
+									.attr('class', 'val')
+									.attr("text-anchor", "middle")
+									.attr("dy", ".35em")
+									.style("font-size", "11")
+									.text(function(d) { return d.radius; });
+						}
+						
+						// Spheres Group mouseleave event handler function
+						function onMouseLeave(mouseEvent, i) {
+							d3.select(this).select("text").remove();
+						}
+					}
+				});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e31"><u>Exercise 31</u>: Modify the example, so the spheres change color when the mouse moves over them
+	</h4>
+	<div>
+		<p id="e31p"><u>Solution</u>: click on the following button <button type="button" onclick="myE31Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e31Solution">
+
+		</div>
+		<script>
+			function myE31Function() {
+				var width = 400, height = 400;
+				d3.select('#e31Solution').selectAll('svg').remove();
+				d3.select('#e31Solution').append('svg').attr('width',width).attr('height',height);
+
+				var numNodes = 100;
+				var nodes = d3.range(numNodes)
+							  .map(function(d) {
+									return {radius: Math.random() * 25};
+							   });
+				var csvFile = "https://imousa54.github.io/data/lab2_part7.csv";
+				d3.csv(csvFile).then(function(data) {
+					var simulation = d3.forceSimulation(data)
+										.force('charge', d3.forceManyBody().strength(5))
+										.force('center', d3.forceCenter(width / 2, height / 2))
+										.force('collision', d3.forceCollide().radius(function(d) {
+												return d.radius;
+											}))
+										.on('tick', ticked);
+					function ticked() {
+						let svg = d3.select('#e31Solution').select('svg');
+						let circleGroup = svg.selectAll("g")
+											.data(data)
+											.join(function(group) {
+														var enter = group.append("g");
+														enter.append("circle");
+														return enter;
+													})
+											.attr("transform", function(d) {
+																	return "translate("+ d.x +"," + d.y + ")";
+																})
+											.on("mouseenter ", onMouseEnter)
+											.on("mouseleave", onMouseLeave);
+						circleGroup.select("circle")
+									.attr('r', function(d) { return d.radius; })
+									.attr('fill', function(d,i) {
+											return d3.interpolateRainbow(i/data.length);
+										});
+										
+						// Spheres Group mouseenter event handler function
+						function onMouseEnter(mouseEvent, i) {
+							d3.select(this).append("text")
+									.attr('class', 'val')
+									.attr("text-anchor", "middle")
+									.attr("dy", ".35em")
+									.style("font-size", "11")
+									.text(function(d) { return d.radius; });
+							d3.select(this).select("circle")
+											.attr('fill', "white")
+											.style("stroke", "black");
+						}
+						
+						// Spheres Group mouseleave event handler function
+						function onMouseLeave(mouseEvent, i) {
+							d3.select(this).select("text").remove();
+							d3.select(this).select("circle")
+											.attr('fill', function(d,x) {
+													return d3.interpolateRainbow(i.index/data.length);
+												})
+											.style("stroke", "transparent");
+						}
+					}
+				});
+			}
+		</script>
+	</div>
+	<br><hr>
+	<h4 id="e32"><u>Exercise 32</u>: Using the D3 documentation as a reference, extend the example to include additional ‘forces’ to make the visualization more interesting and interactive
+	</h4>
+	<div>
+		<p id="e32p"><u>Solution</u>: click on the following button <button type="button" onclick="myE32Function()">Click Me!</button> to run the code and display the exercise's outcome
+		</p>
+		<div id="e32Solution">
+
+		</div>
+		<script>
+			function myE32Function() {
+				var width = 400, height = 400;
+				d3.select('#e32Solution').selectAll('svg').remove();
+				d3.select('#e32Solution').append('svg').attr('width',width).attr('height',height);
+
+				var numNodes = 100;
+				var nodes = d3.range(numNodes)
+							  .map(function(d) {
+									return {radius: Math.random() * 25};
+							   });
+				let csvFile = "https://imousa54.github.io/data/lab2_part7_E32.csv";
+				let csvLinksFile = "https://imousa54.github.io/data/lab2_part7_E32_links.csv";
+				d3.csv(csvFile).then(function(data) {
+					d3.csv(csvLinksFile).then(function(linksData) {
+						linksData.forEach(function(data){
+							data.source = Number(data.source);
+							data.target = Number(data.target);
+						});
+						
+						var simulation = d3.forceSimulation(data)
+											.force('charge', d3.forceManyBody().strength(5))
+											.force('center', d3.forceCenter(width / 2, height / 2))
+											.force('collision', d3.forceCollide().radius(function(d) {
+													return d.radius;
+												}))
+											.force('link', d3.forceLink().links(linksData.slice(0,20)))
+											.on('tick', ticked);
+						function ticked() {
+							let svg = d3.select('#e32Solution').select('svg');
+							let circleGroup = svg.selectAll("g")
+												.data(data)
+												.join(function(group) {
+															var enter = group.append("g");
+															enter.append("circle");
+															return enter;
+														})
+												.attr("transform", function(d) {
+																		return "translate("+ d.x +"," + d.y + ")";
+																	})
+												.on("mouseenter ", onMouseEnter)
+												.on("mouseleave", onMouseLeave);
+							circleGroup.select("circle")
+										.attr('r', function(d) { return d.radius; })
+										.attr('fill', function(d,i) {
+												return d3.interpolateRainbow(i/data.length);
+											});
+				
+							let links = svg.selectAll('line')
+											.data(linksData);
+							links.enter()
+									.append('line')
+									.merge(links)
+									.attr('x1', function(d) {
+											return d.source.x;
+										})
+									.attr('y1', function(d) {
+											return d.source.y;
+										})
+									.attr('x2', function(d) {
+											return d.target.x;
+										})
+									.attr('y2', function(d) {
+											return d.target.y;
+										})
+									.style("stroke", "#ccc");
+							links.exit().remove();
+											
+							// Spheres Group mouseenter event handler function
+							function onMouseEnter(mouseEvent, i) {
+								d3.select(this).append("text")
+										.attr('class', 'val')
+										.attr("text-anchor", "middle")
+										.attr("dy", ".35em")
+										.style("font-size", "11")
+										.text(function(d) { return d.radius; });
+								d3.select(this).select("circle")
+												.attr('fill', "white")
+												.style("stroke", "black");
+							}
+							
+							// Spheres Group mouseleave event handler function
+							function onMouseLeave(mouseEvent, i) {
+								d3.select(this).select("text").remove();
+								d3.select(this).select("circle")
+												.attr('fill', function(d,x) {
+														return d3.interpolateRainbow(i.index/data.length);
+													})
+												.style("stroke", "transparent");
+							}
+						}
+					});
+				});
+			}
+		</script>
+	</div>
+</body>
+</html>

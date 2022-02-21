@@ -13,7 +13,7 @@ body {
     overflow: auto;
 }
 
-#top, #bottom, .menuitem, .selectedmenuitem {
+#top, #bottom, #horizMenu, .menuitem, .selectedmenuitem {
     border-radius: 4px;
     margin: 4px;
 }
@@ -89,6 +89,45 @@ a {
 
 a:hover {
     text-decoration: none;
+}
+
+#horizMenu {
+	margin-bottom:0px;
+}
+
+ul.horizontal {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+ul.horizontal li {
+  float: left;
+  border-right:1px solid #d4d4d4;
+}
+
+ul.horizontal li:last-child {
+  border-right: none;
+}
+
+ul.horizontal li a {
+  display: block;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+ul.horizontal li a:hover:not(.active) {
+  background-color: #003c71;
+  color: white;
+}
+
+ul.horizontal li a.active {
+  background-color: #003c71;
+  color: white;
+  font-weight: bold;
 }
 
 @media (max-width: 800px) {

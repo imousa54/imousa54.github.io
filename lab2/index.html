@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Ibrahim - H00345716">
+	<title>F21DV | Lab 2 - Dynamic and Interactive</title>
+	<link rel="icon" type="image/x-icon" href="./../images/icon.svg">
+	<link rel="stylesheet" type="text/css" href="./../style.css" >
+	<script src="myScript.js"></script>
+</head>
+<body>
+<div class="container wrapper">
+  <div id="top">
+	<img id="logo" src="./../images/logo-header-hw200.svg" width="267.84" height="64.28" alt="Heriot-Watt University">
+	<p><b>Heriot-Watt University<br>F21DV | Data Visualisation and Analytics<br>Professor Ryad Soobhany</b></p>
+    <p><br>Lab 2: Dynamic and Interactive<br>H00345716 | Ibrahim Hasan Abdulraheem Mousa</p>
+  </div>
+  <div id="horizMenu">
+	<ul class="horizontal">
+		<li><a href="./../index.html">Lab 1</a></li>
+		<li><a class="active" href="index.html">Lab 2</a></li>
+		<li><a href="./../lab3/index.html">Lab 3</a></li>
+		<li><a href="./../lab4/index.html">Lab 4</a></li>
+	</ul>
+  </div>
+  <div class="wrapper">
+   <div id="menubar">
+     <ul id="menulist">
+		<li id="part0" class="selectedmenuitem" onclick="selectPart(this, 0)">Introduction</li>
+		<li id="part1" class="menuitem" onclick="selectPart(this, 1)">Part 1: CSS Effects/Animations</li>
+		<li id="part2" class="menuitem" onclick="selectPart(this, 2)">Part 2: Events</li>
+		<li id="part3" class="menuitem" onclick="selectPart(this, 3)">Part 3: D3 Transitions</li>
+		<li id="part4" class="menuitem" onclick="selectPart(this, 4)">Part 4: Animated Chart</li>
+		<li id="part5" class="menuitem" onclick="selectPart(this, 5)">Part 5: Changing Data and Transitioning</li>
+		<li id="part6" class="menuitem" onclick="selectPart(this, 6)">Part 6: Pie Chart</li>
+		<li id="part7" class="menuitem" onclick="selectPart(this, 7)">Part 7: D3 Force layout</li>
+	 </ul>
+    </div>
+    <div id="main">
+		<iframe id="partsdata" src="parts/part_0/index.html" title="parts data" allowfullscreen="true"></iframe>
+   </div>
+  </div>  
+  </div>  
+  <div id="bottom">
+    <span><b>F21DV | Data Visualisation and Analytics | Lab 2 : Dynamic and Interactive<br>Heriot-Watt University</b></span>
+  </div>
+</div>
+</body>
+</html>
