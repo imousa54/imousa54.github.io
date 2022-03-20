@@ -18,7 +18,7 @@ body {
   line-height: 26px;
 }
 
-#main-d3-map-section {
+#main-d3-map-section , #main-d3-clustering-section {
   text-align: center;
 }
 

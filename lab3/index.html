@@ -9,8 +9,8 @@
 	<link rel="stylesheet" href="css/datatables/datatables.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css" >
 	<script src='https://d3js.org/d3.v7.min.js'></script>
-	<script src='js/load_Covid_data.js'></script>
-	<script src='js/d3_graphs_charts.js'></script>
+	<script src='js/main_model_load_Covid_data.js'></script>
+	<script src='js/main_view_d3_graphs_charts.js'></script>
 </head>
 <body>
 <div id="loader-background"></div>
@@ -38,7 +38,9 @@
 					<span>(</span>
 					<a id="main-map" href="javascript:showMap()">Show Map</a>
 					<span>&#8226;</span>
-					<a id="main-map" href="javascript:showGeneralStatistics()">General Statistics</a>
+					<a id="main-statistics" href="javascript:showGeneralStatistics()">General Statistics</a>
+					<span>&#8226;</span>
+					<a id="main-clustering" href="javascript:showClustering()">Data Clustering</a>
 					<span>)</span>
 				</div>
 			</div>
@@ -121,7 +123,7 @@
 			<div id="main-d3-map-section" style="display: none;">
 				<div class="tab-container" style="width: 853px;">
 					<div style="text-align: left;">
-					 <div style="float: left; margin-left: 20px; margin-right: 150px;">
+					 <div style="float: left; margin-left: 20px; margin-right: 100px;">
 					    <div class="form-check">
 					      <input class="form-check-input" value="reportedCases" type="radio" name="flexRadioDefault1" id="flexRadioDefault1" onchange="handleMapChange();" checked>
 					      <label class="form-check-label" for="flexRadioDefault1">
@@ -149,14 +151,91 @@
 					      </label>
 					    </div>
 					 </div>
-					 <div class="form-check form-switch" style="display:none;">
+					 <div class="form-check form-switch">
 					   <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="handleMapChange();">
-					   <label class="form-check-label" for="flexSwitchCheckDefault">Show Circle Markers for Top 10 Countries</label>
+					   <label class="form-check-label" for="flexSwitchCheckDefault">Show Population Indicator (Circle Markers)</label>
 					 </div>
 					</div>
 				</div>
 				<div class="tab-container">
 					<div id="WorldMapGraph"></div>
+				</div>
+			</div>
+			<div id="main-d3-clustering-section" style="display: none;">
+				<div class="tab-container" style="width: 853px;">
+					<div style="text-align: left;">
+					 <div style="float: left; margin-left: 20px; margin-right: 100px;">
+					    <div class="form-check">
+							<span>X Axis:</span>
+							<select id="xClusterValue" name="xClusterValue">
+								<option value="total_cases_per_million" selected>Total Cases Per Million</option>
+								<option value="total_deaths_per_million">Total Deaths Per Million</option>
+								<option value="total_cases">Total Cases</option>
+								<option value="total_deaths">Total Deaths</option>
+								<option value="population">Population</option>
+								<option value="population_density">Population Density</option>
+								<option value="median_age">Median Age</option>
+								<option value="extreme_poverty">Extreme Poverty</option>
+							</select>
+					    </div>
+					    <div class="form-check">
+							<span>Y Axis:</span>
+							<select id="yClusterValue" name="yClusterValue">
+								<option value="total_cases_per_million">Total Cases Per Million</option>
+								<option value="total_deaths_per_million" selected>Total Deaths Per Million</option>
+								<option value="total_cases">Total Cases</option>
+								<option value="total_deaths">Total Deaths</option>
+								<option value="population">Population</option>
+								<option value="population_density">Population Density</option>
+								<option value="median_age">Median Age</option>
+								<option value="extreme_poverty">Extreme Poverty</option>
+							</select>
+					    </div>
+					 </div>
+					 <div style="float: left; margin-right: 100px;">
+					    <div class="form-check">
+							<select id="numCluster" name="numCluster" style="width: 150px;">
+								<option value="2">2 Clusters</option>
+								<option value="3" selected>3 Clusters</option>
+								<option value="4">4 Clusters</option>
+								<option value="5">5 Clusters</option>
+								<option value="6">6 Clusters</option>
+								<option value="7">7 Clusters</option>
+								<option value="8">8 Clusters</option>
+								<option value="9">9 Clusters</option>
+								<option value="10">10 Clusters</option>
+							</select>
+					    </div>
+					    <div class="form-check">
+							<select id="numIteration" name="numIteration" style="width: 150px;">
+								<option value="10" selected>10 Iterations</option>
+								<option value="15">15 Iterations</option>
+								<option value="20">20 Iterations</option>
+								<option value="25">25 Iterations</option>
+								<option value="30">30 Iterations</option>
+								<option value="35">35 Iterations</option>
+								<option value="40">40 Iterations</option>
+								<option value="45">45 Iterations</option>
+								<option value="50">50 Iterations</option>
+							</select>
+					    </div>
+					 </div>
+					 <div style="float: left;">
+					    <div class="form-check">
+							<button type="button" onclick="executeClustering()" style="width: 150px;">Execute</button>
+					    </div>
+					    <div class="form-check">
+							
+					    </div>
+					 </div>
+					</div>
+				</div>
+				<div class="tab-container">
+					<div id="ClusteredGraphUsingKMeans"></div>
+				</div>
+				<div class="tab-container" style="width: 853px; text-align: left;">
+					<span><b>Cluster Output:</b></span>
+					<div id="ClusteredGraphUsingKMeansOutput"></div>
 				</div>
 			</div>
 			<div id="main-d3-statistics-section" style="display: none;">
@@ -172,6 +251,34 @@
 							<button class="tablinks active">Deaths - Wealth Relation</button>
 						</div>
 						<div id="WealthTotalDeathsLineGraph" class="tabcontent2"></div>
+					</div>
+				</div>
+				<div class="main-d3-updates">
+					<div class="tab-container">
+						<div class="tab">
+							<button class="tablinks active">Cases - Vaccinations Relation</button>
+						</div>
+						<div id="VaccinationsTotalCasesLineGraph" class="tabcontent2"></div>
+					</div>
+					<div class="tab-container">
+						<div class="tab">
+							<button class="tablinks active">Deaths - Vaccinations Relation</button>
+						</div>
+						<div id="VaccinationsTotalDeathsLineGraph" class="tabcontent2"></div>
+					</div>
+				</div>
+				<div class="main-d3-updates">
+					<div class="tab-container">
+						<div class="tab">
+							<button class="tablinks active">Cases - Booster Relation</button>
+						</div>
+						<div id="BoosterTotalCasesLineGraph" class="tabcontent2"></div>
+					</div>
+					<div class="tab-container">
+						<div class="tab">
+							<button class="tablinks active">Deaths - Booster Relation</button>
+						</div>
+						<div id="BoosterTotalDeathsLineGraph" class="tabcontent2"></div>
 					</div>
 				</div>
 				<div class="main-d3-updates">
@@ -209,401 +316,7 @@
 		<script src="js/datatables/bootstrap/3.0.0/bootstrap.min.js"></script>
 		<script src="js/datatables/jquery/jquery.dataTables.min.js"></script>
 		<script src="js/datatables/datatables.js"></script>
-		<script type="text/javascript">
-			var latestLocation = "world";
-			var latestType = 0;
-			$(document).ready(function() {
-				modelConstructor();
-			});
-			
-			document.getElementById("main").style.display = "none";
-			document.getElementById("LocationDailyCasesBarGraph").style.display = "block";
-			document.getElementById("LocationDailyDeathsBarGraph").style.display = "block";
-			document.getElementById("ContinentsCasesBarGraph").style.display = "block";
-			document.getElementById("ContinentsDeathsBarGraph").style.display = "block";
-			
-			function openGraphTab(evt, graphId) {
-				var i, tabcontent, tablinks;
-				tabcontent = evt.currentTarget.parentElement.parentElement.getElementsByClassName("tabcontent");
-				for (i = 0; i < tabcontent.length; i++) {
-					tabcontent[i].style.display = "none";
-				}
-				tablinks = evt.currentTarget.parentElement.parentElement.getElementsByClassName("tablinks");
-				for (i = 0; i < tablinks.length; i++) {
-					tablinks[i].className = tablinks[i].className.replace(" active", "");
-				}
-				document.getElementById(graphId).style.display = "block";
-				evt.currentTarget.className += " active";
-			}
-			
-			function updateContinentsGraph(evt, isForCases, isPerMillion) {
-				let currentLocation = latestLocation;
-				let currentType = latestType;
-				if(latestType == 2) {
-					currentLocation = getLocationContinentName(latestLocation);
-					currentType = 1;
-				}
-				tablinks = evt.currentTarget.parentElement.parentElement.getElementsByClassName("tablinks");
-				for (i = 0; i < tablinks.length; i++) {
-					tablinks[i].className = tablinks[i].className.replace(" active", "");
-				}
-				evt.currentTarget.className += " active";
-				if (isForCases) {
-					createContinentsCasesBarGraph("#ContinentsCasesBarGraph",isPerMillion,currentType,currentLocation);
-				}
-				else {
-					createContinentsDeathsBarGraph("#ContinentsDeathsBarGraph",isPerMillion,currentType,currentLocation);
-				}
-			}
-			
-			function modelConstructor() {
-				const promises = [d3.csv(csvCovidDataLink), d3.csv(csvCovidCodebookLink)];
-				d3.csv(csvCovidDataLink).then(function(csvCovidData) {
-				d3.csv(csvCovidCodebookLink).then(function(csvCovidCodebookData) {
-				d3.csv(csvVaccinationsDataLink).then(function(csvVaccinationsData) {
-				d3.json(worldTopologyDataLink).then(function(worldTopologyData) {
-					loadAndParseData(csvCovidCodebookData, csvCovidData, csvVaccinationsData, worldTopologyData);
-				}); }); });	});
-			}
-			
-			function loadAndParseData(csvCovidCodebookData, csvCovidData, csvVaccinationsData, topologyData) {
-				readCovidCodebookDictionaryData(csvCovidCodebookData);
-				readCovidData(csvCovidData);
-				readVaccinationsData(csvVaccinationsData);
-				readWorldTopologyData(topologyData);
-				initializeApp();
-			}
-			
-			function initializeApp() {
-				document.getElementById("main").style.display = "block";
-				document.getElementById("loader").style.display = "none";
-				document.getElementById("loader-background").style.display = "none";
-				createLocationMainUpdates("World","#LocationMainUpdates");
-				createLocationDailyCasesBarGraph("World","#LocationDailyCasesBarGraph");
-				createLocationDailyDeathsBarGraph("World","#LocationDailyDeathsBarGraph");
-				createLocationTotalCasesLineGraph("World","#LocationTotalCasesLineGraph");
-				createLocationTotalDeathsLineGraph("World","#LocationTotalDeathsLineGraph");
-				createWealthTotalCasesGraph("#WealthTotalCasesLineGraph");
-				createWealthTotalDeathsGraph("#WealthTotalDeathsLineGraph");
-				createDevIndexTotalCasesGraph("#DevIndTotalCasesLineGraph");
-				createDevIndexTotalDeathsGraph("#DevIndTotalDeathsLineGraph");
-				createHandwashingTotalCasesGraph("#HandwashingTotalCasesLineGraph");
-				createHandwashingTotalDeathsGraph("#HandwashingTotalDeathsLineGraph");
-				createContinentsCasesBarGraph("#ContinentsCasesBarGraph",false,0,"World");
-				createContinentsDeathsBarGraph("#ContinentsDeathsBarGraph",false,0,"World");
-				createWorldMapGraph("#WorldMapGraph", true, true);
-				updateCovidTableData("World", 0);
-				updateVaccinationTableData("World", 0);
-				updateLinks("World", 0);
-			}
-		
-			function updateGraphChartLocation(location, type) {
-				document.getElementById("main-d3-section").style.display = "block";
-				document.getElementById("main-d3-map-section").style.display = "none";
-				document.getElementById("main-d3-statistics-section").style.display = "none";
-				latestLocation = location;
-				latestType = type;	
-				let delay = (type == 2) ? 1000 : 0;
-				document.getElementById('nav-links').scrollIntoView();
-				createLocationMainUpdates(location, "#LocationMainUpdates", delay);
-				createLocationDailyCasesBarGraph(location, "#LocationDailyCasesBarGraph");
-				createLocationDailyDeathsBarGraph(location, "#LocationDailyDeathsBarGraph");
-				createLocationTotalCasesLineGraph(location, "#LocationTotalCasesLineGraph");
-				createLocationTotalDeathsLineGraph(location, "#LocationTotalDeathsLineGraph");
-				updateCovidTableData(location, type);
-				updateVaccinationTableData(location, type);
-				updateLinks(location, type);
-				if(type == 0) { // World Selected Area
-					createContinentsCasesBarGraph("#ContinentsCasesBarGraph",false,0,"World");
-					createContinentsDeathsBarGraph("#ContinentsCasesBarGraph",false,0,"World");
-				}
-				else if(type == 1) { // Continent Selected Area
-					createContinentsCasesBarGraph("#ContinentsCasesBarGraph",false,1,location);
-					createContinentsDeathsBarGraph("#ContinentsCasesBarGraph",false,1,location);
-				}
-				else if(type == 2) { // Countries Selected Area
-				
-				}
-			}
-			
-			function showMap() {
-				updateGraphChartLocation("World", 0);
-				document.getElementById("main-d3-section").style.display = "none";
-				document.getElementById("main-d3-map-section").style.display = "block";
-				document.getElementById("main-d3-statistics-section").style.display = "none";
-			}
-			
-			function showGeneralStatistics() {
-				updateGraphChartLocation("World", 0);
-				document.getElementById("main-d3-section").style.display = "none";
-				document.getElementById("main-d3-map-section").style.display = "none";
-				document.getElementById("main-d3-statistics-section").style.display = "block";
-			}
-			
-			function handleMapChange() {
-				let isReportedCases = (document.getElementById('flexRadioDefault1').checked) ? true : false;
-				let isTotal = (document.getElementById('flexRadioDefault3').checked) ? true : false;
-				createWorldMapGraph("#WorldMapGraph", isReportedCases, isTotal);
-			}
-			
-			function updateLinks(location, type) {
-				let content = '<a href="javascript:updateGraphChartLocation(' + "'World', 0" + ')">World</a> /';
-				if(type == 0) { // World Selected Area
-					content += " All Continents / All Countries";
-				}
-				else if(type == 1) { // Continent Selected Area
-					content += ' <a href="javascript:updateGraphChartLocation(' + "'" + location + "', 1" + ')">' + location + '</a>';
-					content += " / All Countries";
-				}
-				else if(type == 2) { // Countries Selected Area
-					let continentName = getLocationContinentName(location);
-					content += ' <a href="javascript:updateGraphChartLocation(' + "'" + continentName + "', 1" + ')">' + continentName + '</a> /';
-					content += ' <a href="javascript:updateGraphChartLocation(' + "'" + location + "', 2" + ')">' + location + '</a>';
-				}
-				$("#nav-links-span").empty();
-				$("#nav-links-span").append(content);
-			}
-			
-			function updateCovidTableData(location, type){
-				let data,
-					showLocation = true,
-					showDate = false;
-				if(type == 0) { // World
-					data = getAllCountriesLatestCovidData();
-				}
-				else if(type == 1) { // Continent
-					data = getAllContinentCountriesLatestCovidData(location);
-				}
-				else if(type == 2) { // Countries
-					data = getAllLocationCovidData(location);
-					showLocation = false;
-					showDate = true;
-				}
-				var table = $('#summary-table').DataTable();
-				table.destroy();
-				$("#summary-table tbody").empty();
-				$.each(data, function(i, data) {
-					var tr = "<tr>";
-					tr += "<td class='text-left'>" + data.date + "</td>";
-					tr += "<td class='text-left'>" + data.location + "</td>";
-					tr += "<td>" + data.total_cases + "</td>";
-					if (data.new_cases > 0) {
-						tr += "<td style='font-weight: bold; background-color:#ffcbaa;'>" + data.new_cases + "</td>";
-					}
-					else {
-						tr += "<td></td>";
-					}
-					tr += "<td>" + data.total_deaths + "</td>";
-					if (data.new_deaths > 0) {
-						tr += "<td style='font-weight: bold; background-color:red; color:white;'>" + data.new_deaths + "</td>";
-					}
-					else {
-						tr += "<td></td>";
-					}
-					tr += "<td>" + data.total_cases_per_million + "</td>";
-					tr += "<td>" + data.new_deaths_per_million + "</td>";
-					tr += "<td>" + data.population + "</td>";
-					tr += "</tr>";
-					$("#summary-table tbody").append(tr);
-				});
-				$("#summary-table").dataTable({
-					"sPaginationType": "bs_four_button",
-					"order": [[ 2, "desc" ]],
-					"columnDefs": [
-						{
-							"targets": [0],
-							"visible": showDate,
-							"width": "12%",
-							"render": function (data) {
-										return (new Date(Number(data)).toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"}));
-									  }
-						},
-						{
-							"targets": [1],
-							"width": "20%",
-							"visible": showLocation,
-							"render": function (data) {
-										return '<a href="javascript:updateGraphChartLocation(' + "'" + data + "', 2" + ')">' + data + '</a>';
-									  }
-						},
-						{
-							"targets": [2],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [3],
-							"render": function (data) {
-										if(data) {
-											return "+" + Number(data).toLocaleString();
-										}
-										return data;
-									  }
-						},
-						{
-							"targets": [4],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [5],
-							"render": function (data) {
-										if(data) {
-											return "+" + Number(data).toLocaleString();
-										}
-										return data;
-									  }
-						},
-						{
-							"targets": [6],
-							"render": function (data) {
-										return Number(data).toLocaleString(undefined, { maximumFractionDigits: 2 });
-									  }
-						},
-						{
-							"targets": [7],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [8],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						}
-					]
-				});	
-				$("#summary-table").each(function(){
-					var datatable = $(this);
-					// SEARCH - Add the placeholder for Search and Turn this into in-line form control
-					var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
-					search_input.attr('placeholder', 'Search');
-					search_input.addClass('form-control input-sm');
-					// LENGTH - Inline-Form control
-					var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
-					length_sel.addClass('form-control input-sm');
-				});
-			}
-			function updateVaccinationTableData(location, type){
-				let data,
-					showLocation = true,
-					showDate = false;
-				if(type == 0) { // World
-					data = getAllCountriesLatestVaccinationData();
-				}
-				else if(type == 1) { // Continent
-					data = getAllContinentCountriesLatestVaccinationData(location);
-				}
-				else if(type == 2) { // Countries
-					data = getAllLocationVaccinationData(location);
-					showLocation = false;
-					showDate = true;
-				}
-				var table = $('#vaccination-summary-table').DataTable();
-				table.destroy();
-				$("#vaccination-summary-table tbody").empty();
-				$.each(data, function(i, data) {
-					var tr = "<tr>";
-					tr += "<td class='text-left'>" + data.date + "</td>";
-					tr += "<td class='text-left'>" + data.location + "</td>";
-					tr += "<td>" + data.people_vaccinated + "</td>";
-					tr += "<td>" + data.people_fully_vaccinated + "</td>";
-					tr += "<td>" + data.total_vaccinations + "</td>";
-					if (data.daily_vaccinations > 0) {
-						tr += "<td style='font-weight: bold; background-color:blue; color:white;'>" + data.daily_vaccinations + "</td>";
-					}
-					else {
-						tr += "<td></td>";
-					}
-					if (data.daily_vaccinations_per_million > 0) {
-						tr += "<td style='font-weight: bold; background-color:blue; color:white;'>" + data.daily_vaccinations_per_million + "</td>";
-					}
-					else {
-						tr += "<td></td>";
-					}
-					tr += "<td>" + data.people_fully_vaccinated_per_hundred + "</td>";
-					tr += "</tr>";
-					$("#vaccination-summary-table tbody").append(tr);
-				});
-				$("#vaccination-summary-table").dataTable({
-					"sPaginationType": "bs_four_button",
-					"order": [[ 2, "desc" ]],
-					"columnDefs": [
-						{
-							"targets": [0],
-							"visible": showDate,
-							"width": "12%",
-							"render": function (data) {
-										return (new Date(Number(data)).toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"}));
-									  }
-						},
-						{
-							"targets": [1],
-							"width": "20%",
-							"visible": showLocation,
-							"render": function (data) {
-										return '<a href="javascript:updateGraphChartLocation(' + "'" + data + "', 2" + ')">' + data + '</a>';
-									  }
-						},
-						{
-							"targets": [2],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [3],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [4],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						},
-						{
-							"targets": [5],
-							"render": function (data) {
-										if(data) {
-											return "+" + Number(data).toLocaleString();
-										}
-										return data;
-									  }
-						},
-						{
-							"targets": [6],
-							"render": function (data) {
-										if(data) {
-											return "+" + Number(data).toLocaleString(undefined, { maximumFractionDigits: 2 });;
-										}
-										return data;
-									  }
-						},
-						{
-							"targets": [7],
-							"render": function (data) {
-										return Number(data).toLocaleString();
-									  }
-						}
-					]
-				});	
-				$("#vaccination-summary-table").each(function(){
-					var datatable = $(this);
-					// SEARCH - Add the placeholder for Search and Turn this into in-line form control
-					var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
-					search_input.attr('placeholder', 'Search');
-					search_input.addClass('form-control input-sm');
-					// LENGTH - Inline-Form control
-					var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
-					length_sel.addClass('form-control input-sm');
-				});
-			}
-		</script>
+		<script src="js/controller_script.js"></script>
 	</div>
    </div>
   </div>    
