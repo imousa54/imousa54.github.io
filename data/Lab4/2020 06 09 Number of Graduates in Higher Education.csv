@@ -1,4 +1,4 @@
-Academic_Year,Institution_Type_EN,Campus_Zone_EN,Coordinates,LocalFlag_EN,Gender_EN,Bachelors,Certificate,Diploma,Doctorate,Graduate Certificate,Graduate Diploma,Higher Diploma,Masters,Other ????,Total 
+Academic_Year,Institution_Type_EN,Campus_Zone_EN,Coordinates,LocalFlag_EN,Gender_EN,Bachelors,Certificate,Diploma,Doctorate,Graduate Certificate,Graduate Diploma,Higher Diploma,Masters,Other ????,Total
 2012-2013,Federal,Abu Dhabi,"24.466667,54.366669",Expat,Female,235,,,,,,,40,,275
 2012-2013,Federal,Abu Dhabi,"24.466667,54.366669",Expat,Male,126,,10,,,,1,42,,179
 2012-2013,Federal,Abu Dhabi,"24.466667,54.366669",Local,Female,"1,838",5,532,,,,192,280,,"2,847"
