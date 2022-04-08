@@ -5,10 +5,17 @@
 	<meta name="author" content="Ibrahim - H00345716">
 	<title>F21DV | Lab 4</title>
 	<link rel="icon" type="image/x-icon" href="./../images/icon.svg">
-	<link rel="stylesheet" type="text/css" href="./../style.css" >
+	<link rel="stylesheet" href="css/datatables/bootstrap/3.0.0/bootstrap.min.css">
+	<link rel="stylesheet" href="css/datatables/datatables.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css" >
+	<script src='https://d3js.org/d3.v7.min.js'></script>
+	<script src='js/model_script.js'></script>
+	<script src='js/view_script.js'></script>
 </head>
 <body>
-<div class="container wrapper">
+<div id="loader-background"></div>
+<div id="loader"></div>
+<div class="container-main wrapper-main">
   <div id="top">
 	<img id="logo" src="./../images/logo-header-hw200.svg" width="267.84" height="64.28" alt="Heriot-Watt University">
 	<p><b>Heriot-Watt University<br>F21DV | Data Visualisation and Analytics<br>Professor Ryad Soobhany</b></p>
@@ -22,17 +29,211 @@
 		<li><a class="active" href="index.html">Lab 4</a></li>
 	</ul>
   </div>
-  <div class="wrapper">
-   <div id="menubar">
-     <ul id="menulist">
-		<li id="part1" class="selectedmenuitem">Introduction</li>
-	 </ul>
-    </div>
+  <div class="wrapper-main">
     <div id="main">
-		<iframe id="partsdata" title="parts data" allowfullscreen="true"></iframe>
+		<div>
+			<div id="nav-links" class="main-d3-updates">
+				<div style="padding-top: 15px; font-size: 14px;">
+					<a id="main-map" href="javascript:showMap()">Show Map and Statistics</a>
+					<span>&#8226;</span>
+					<a id="main-clustering" href="javascript:showClustering()">Data Clustering</a>
+				</div>
+			</div>
+			<div id="main-d3-section">
+				<div id="main-d3-map-section">
+					<div class="tab-container" style="margin: auto;">
+						<div style="text-align: left;">
+							<div style="float: left; margin:5px 10px;">
+								<div class="form-check">
+								  <label class="form-check-label" for="academicYearSelect">
+									Academic Year
+								  </label>
+								</div>
+								<div class="form-check">
+								  <select name="academicYearSelect" id="academicYearSelect" onchange="handleCriteriaChange();" style="width: 195px;">
+									<option value="All">All</option>
+								  </select>
+								</div>
+							 </div>
+							 <div style="float: left; margin:5px 10px;">
+								<div class="form-check">
+								  <label class="form-check-label" for="institutionTypeSelect">
+									Institution Type
+								  </label>
+								</div>
+								<div class="form-check">
+								  <select name="institutionTypeSelect" id="institutionTypeSelect" onchange="handleCriteriaChange();" style="width: 195px;"></select>
+								</div>
+							 </div>
+							 <div style="float: left; margin:5px 10px;">
+								<div class="form-check">
+								  <label class="form-check-label" for="nationalitySelect">
+									Student Nationality
+								  </label>
+								</div>
+								<div class="form-check">
+								  <select name="nationalitySelect" id="nationalitySelect" onchange="handleCriteriaChange();" style="width: 195px;"></select>
+								</div>
+							 </div>
+							 <div style="float: left; margin:5px 10px;">
+								<div class="form-check">
+								  <label class="form-check-label" for="genderSelect">
+									Student Gender
+								  </label>
+								</div>
+								<div class="form-check">
+								  <select name="genderSelect" id="genderSelect" onchange="handleCriteriaChange();" style="width: 195px;"></select>
+								</div>
+							 </div>
+							 <div style="float: left; margin:5px 10px;">
+								<div class="form-check">
+								  <label class="form-check-label" for="outputSelect">
+									Output
+								  </label>
+								</div>
+								<div class="form-check">
+								  <select name="outputSelect" id="outputSelect" onchange="handleCriteriaChange();" style="width: 220px;">
+										<option value="Total">Total Graduate</option>
+										<option value="Bachelors">Total Bachelors</option>
+										<option value="Certificate">Total Certificate</option>
+										<option value="Diploma">Total Diploma</option>
+										<option value="Doctorate">Total Doctorate</option>
+										<option value="Graduate_Certificate">Total Graduate Certificate</option>
+										<option value="Graduate_Diploma">Total Graduate Diploma</option>
+										<option value="Higher_Diploma">Total Higher Diploma</option>
+										<option value="Masters">Total Masters</option>
+								  </select>
+								</div>
+							 </div>
+						</div>
+					</div>
+				</div>
+				<div class="main-d3-updates">
+					<div class="tab-container">
+						<div id="UAEMapGraph" class="tabcontent" style="display: block;"></div>
+					</div>
+					<div class="tab-container">
+						<div id="UAEGraduateEmiratesLinearGraph" class="tabcontent" style="display: block;"></div>
+					</div>
+				</div>
+				<div class="main-d3-updates">
+					<div class="tab-container">
+						<div id="UAEGraduateEmiratesBarGraph" class="tabcontent" style="display: block;"></div>
+					</div>
+					<div class="tab-container">
+						<div id="UAEGraduateEmiratesPieChart" class="tabcontent" style="display: block;"></div>
+					</div>
+				</div>
+				<div id="graduate-table" class="main-d3-updates">
+					<table id="graduate-summary-table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-responsive">
+						<thead>
+							<tr>
+								<th class="text-left" data-field="Campus_Zone_EN">Campus Zone</th>
+								<th data-field="Bachelors">Total Bachelors</th>
+								<th data-field="Certificate">Total Certificate</th>
+								<th data-field="Diploma">Total Diploma</th>
+								<th data-field="Doctorate">Total Doctorate</th>
+								<th data-field="Graduate_Certificate">Total Graduate Certificate</th>
+								<th data-field="Graduate_Diploma">Total Graduate Diploma</th>
+								<th data-field="Higher_Diploma">Total Higher Diploma</th>
+								<th data-field="Masters">Total Masters</th>
+								<th data-field="Total">Total Graduates</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="main-d3-clustering-section" style="display: none;">
+				<div class="tab-container" style="width: 853px;">
+					<div style="text-align: left;">
+					 <div style="float: left; margin-left: 20px; margin-right: 100px;">
+					    <div class="form-check">
+							<span>X Axis:</span>
+							<select id="xClusterValue" name="xClusterValue">
+								<option value="Total">Total Graduate</option>
+								<option value="Bachelors" selected>Total Bachelors</option>
+								<option value="Certificate">Total Certificate</option>
+								<option value="Diploma">Total Diploma</option>
+								<option value="Doctorate">Total Doctorate</option>
+								<option value="Graduate_Certificate">Total Graduate Certificate</option>
+								<option value="Graduate_Diploma">Total Graduate Diploma</option>
+								<option value="Higher_Diploma">Total Higher Diploma</option>
+								<option value="Masters">Total Masters</option>
+							</select>
+					    </div>
+					    <div class="form-check">
+							<span>Y Axis:</span>
+							<select id="yClusterValue" name="yClusterValue">
+								<option value="Total">Total Graduate</option>
+								<option value="Bachelors" selected>Total Bachelors</option>
+								<option value="Certificate">Total Certificate</option>
+								<option value="Diploma">Total Diploma</option>
+								<option value="Doctorate">Total Doctorate</option>
+								<option value="Graduate_Certificate">Total Graduate Certificate</option>
+								<option value="Graduate_Diploma">Total Graduate Diploma</option>
+								<option value="Higher_Diploma">Total Higher Diploma</option>
+								<option value="Masters">Total Masters</option>
+							</select>
+					    </div>
+					 </div>
+					 <div style="float: left; margin-right: 100px;">
+					    <div class="form-check">
+							<select id="numCluster" name="numCluster" style="width: 150px;">
+								<option value="2">2 Clusters</option>
+								<option value="3" selected>3 Clusters</option>
+								<option value="4">4 Clusters</option>
+								<option value="5">5 Clusters</option>
+								<option value="6">6 Clusters</option>
+								<option value="7">7 Clusters</option>
+								<option value="8">8 Clusters</option>
+								<option value="9">9 Clusters</option>
+								<option value="10">10 Clusters</option>
+							</select>
+					    </div>
+					    <div class="form-check">
+							<select id="numIteration" name="numIteration" style="width: 150px;">
+								<option value="10" selected>10 Iterations</option>
+								<option value="15">15 Iterations</option>
+								<option value="20">20 Iterations</option>
+								<option value="25">25 Iterations</option>
+								<option value="30">30 Iterations</option>
+								<option value="35">35 Iterations</option>
+								<option value="40">40 Iterations</option>
+								<option value="45">45 Iterations</option>
+								<option value="50">50 Iterations</option>
+							</select>
+					    </div>
+					 </div>
+					 <div style="float: left;">
+					    <div class="form-check">
+							<button type="button" onclick="executeClustering()" style="width: 150px;">Execute</button>
+					    </div>
+					    <div class="form-check">
+							
+					    </div>
+					 </div>
+					</div>
+				</div>
+				<div class="tab-container">
+					<div id="ClusteredGraphUsingKMeans"></div>
+				</div>
+				<div class="tab-container" style="width: 853px; text-align: left;">
+					<span><b>Cluster Output:</b></span>
+					<div id="ClusteredGraphUsingKMeansOutput"></div>
+				</div>
+			</div>
+		</div>
+		<script src="https://unpkg.com/topojson@3"></script>
+		<script src="js/datatables/jquery/jquery-3.5.1.js"></script>
+		<script src="js/datatables/bootstrap/3.0.0/bootstrap.min.js"></script>
+		<script src="js/datatables/jquery/jquery.dataTables.min.js"></script>
+		<script src="js/datatables/datatables.js"></script>
+		<script src="js/controller_script.js"></script>
+	</div>
    </div>
-  </div>  
-  </div>  
+  </div>    
   <div id="bottom">
     <span><b>F21DV | Data Visualisation and Analytics | Lab 4<br>Heriot-Watt University</b></span>
   </div>
